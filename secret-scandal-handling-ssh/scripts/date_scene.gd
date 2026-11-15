@@ -96,9 +96,6 @@ func _on_line(line: Dictionary) -> void:
 	_typing = create_tween()
 	_typing.tween_property(_text, "visible_ratio", 1.0, maxf(0.5, _text.text.length() * 0.02))
 	_typing.finished.connect(func(): _show_choices(line.get("choices", [])))
-	# running memory so later beats stay consistent
-	GameState.memory[char_id] += "Player: %s | You: %s\n" % [_last_player_text, _text.text.left(120)]
-	GameState.memory[char_id] = GameState.memory[char_id].right(600)
 
 
 func _show_choices(choices: Array) -> void:

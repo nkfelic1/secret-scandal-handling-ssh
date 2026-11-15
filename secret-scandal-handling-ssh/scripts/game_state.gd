@@ -9,7 +9,9 @@ var spy_id: String = ""
 var day: int = 1
 var dates_left: int = 5
 var clues_seen: Array = []          # [{character, text}]
-var memory: Dictionary = {}         # character_id -> short running summary
+var memory: Dictionary = {}         # character_id -> short running summary (unused for now)
+var facts: Dictionary = {}          # character_id -> short facts established in conversation (kept forever)
+var history: Dictionary = {}        # character_id -> [{role: "user"/"model", text}] chat turns sent to Gemini
 var player_name: String = "Johnson"
 var affection: Dictionary = {}      # character_id -> int
 
@@ -35,6 +37,8 @@ func new_run() -> void:
 	clues_seen.clear()
 	for id in ids:
 		memory[id] = ""
+		history[id] = []
+		facts[id] = []
 		affection[id] = 0
 
 

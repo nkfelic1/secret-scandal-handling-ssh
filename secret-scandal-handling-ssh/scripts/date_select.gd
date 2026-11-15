@@ -29,9 +29,8 @@ func _ready() -> void:
 func _hover(id: String) -> void:
 	var c: Dictionary = GameState.characters[id]
 	_info_name.text = c["name"]
-	_info_detail.text = "%s   -   %s" % [
-		c["location"].get_file().get_basename().replace("_", " ").trim_suffix(" Interior").trim_suffix(" Workspace"),
-		", ".join(c["traits"].slice(0, 2))]
+	_info_detail.text = "%s   -   %s" % [c["role"],
+		c["location"].get_file().get_basename().replace("_", " ").trim_suffix(" Interior").trim_suffix(" Workspace")]
 	# dim everyone else so the hovered girl stands out
 	for btn in _columns.get_children():
 		var dim := btn.get_node_or_null("Dim")
