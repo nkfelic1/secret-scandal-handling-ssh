@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://dgbgqgooqvj60"]
+
+[ext_resource type="Texture2D" uid="uid://bho1anmh14fp3" path="res://art/backgrounds/HomeScreen.png" id="1_krot7"]
+[ext_resource type="Script" uid="uid://c56dtkb66mw75" path="res://scenes/home.gd" id="1_reixx"]
+[ext_resource type="Shader" uid="uid://cvycs23e20bkw" path="res://scenes/home.gdshader" id="1_u4wd2"]
+[ext_resource type="Texture2D" uid="uid://d0oglt2ua1fpp" path="res://art/buttons/HomeScreenButton.png" id="4_uhids"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ig7tw"]
+shader = ExtResource("1_u4wd2")
+shader_parameter/blur = 5.0
+
+[node name="Home" type="Control" unique_id=1310403310]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_reixx")
+
+[node name="Backdrop" type="TextureRect" parent="." unique_id=521157063]
+modulate = Color(0.4, 0.4, 0.4, 1)
+material = SubResource("ShaderMaterial_ig7tw")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_krot7")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="HomeScreen" type="TextureRect" parent="." unique_id=12182996]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_krot7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PlayButton" type="TextureButton" parent="." unique_id=1242819855]
+layout_mode = 0
+offset_left = 787.0
+offset_top = 888.0
+offset_right = 1891.0
+offset_bottom = 1032.0
+texture_normal = ExtResource("4_uhids")
+
+[node name="Label" type="Label" parent="PlayButton" unique_id=1990669280]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -408.0
+offset_top = -29.0
+offset_right = -408.0
+offset_bottom = -29.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "Play"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
