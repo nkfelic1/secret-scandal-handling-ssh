@@ -1,11 +1,11 @@
 extends Node
 ## Autoload "GeminiClient": generates one date-scene beat as structured JSON.
-## The key lives in res://secrets.cfg (git-ignored). Do not hardcode it.
+## Gemini requests go through the Cloudflare Worker. The API key lives only in Cloudflare.
 
 signal line_ready(line: Dictionary)      # {speaker, emotion, text, choices}
 signal failed(reason: String)
 
-const ENDPOINT := "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent"
+const BACKEND_URL := "https://ssh-api.hliu325.workers.dev/"
 
 const WORLD := """WORLD AND RULES OF THE GAME (always true):
 - The player IS Johnson Jeng, CEO of Invision, a powerful AI-chip company. Invision's main rival is DMA. He is secretly dating several women at once.
@@ -27,26 +27,21 @@ const HINT_LEVELS := [
 ]
 
 const FALLBACK_MODELS := ["gemini-flash-lite-latest", "gemini-3.1-flash-lite"]
-const HEDGE_DELAY := 2.5       # seconds before also asking a second model
-const REQUEST_TIMEOUT := 10.0  # give up on any single request after this long
+const HEDGE_DELAY := 2.5
+const REQUEST_TIMEOUT := 10.0
 
-var _api_key := ""
 var _model := "gemini-3.5-flash-lite"
 
 
 func _ready() -> void:
 	var cfg := ConfigFile.new()
 	if cfg.load("res://secrets.cfg") == OK:
-		_api_key = cfg.get_value("gemini", "api_key", "")
 		_model = cfg.get_value("gemini", "model", _model)
-	else:
-		push_warning("secrets.cfg missing - Gemini calls will use fallback lines.")
 
 
-## Hints get stronger as days pass and as you spend more turns with this character.
 func _hint_level(id: String) -> int:
 	var turns: int = GameState.history[id].size() / 2
-	return clampi(GameState.day + turns / 4 + GameState.bothered_bonus(id), 1, 4)   # bothered (low trust) = more slips
+	return clampi(GameState.day + turns / 4 + GameState.bothered_bonus(id), 1, 4)
 
 
 func _system_prompt(id: String, beat: String, tone: String = "") -> String:
@@ -83,13 +78,11 @@ Keep it flirty, PG-13, and SHORT: 1-2 sentences, under 25 words total, like a qu
 		c["good_mood"], bothered, GameState.active_secret(id), role_note, extra, HINT_LEVELS[_hint_level(id)],
 		GameState.trust[id], GameState.trust_label(id), GameState.trust_guidance(id),
 		"; ".join(GameState.facts[id]) if GameState.facts[id].size() > 0 else "none yet", beat]
-	# The meaner Johnson is, the more bothered she gets, and a bothered person lets her guard slip.
 	if tone == "rude" or tone == "cruel":
 		prompt += "\nJOHNSON WAS JUST %s TO YOU. You are bothered and your guard is down. React in your bothered manner, and let ONE telling slip about your hidden secret show in this reply without confessing it outright." % ("CRUEL" if tone == "cruel" else "RUDE")
 	return prompt
 
 
-## Last few chat turns (must start with a "user" turn and alternate) plus the new Johnson turn.
 func _contents(id: String, user_text: String) -> Array:
 	var h: Array = GameState.history[id].slice(-16)
 	while h.size() > 0 and h[0]["role"] != "user":
@@ -101,8 +94,6 @@ func _contents(id: String, user_text: String) -> Array:
 	return out
 
 
-## Sends the request to the main model. If it has not answered within HEDGE_DELAY seconds (or failed),
-## asks the next model in parallel. The first successful (HTTP 200) answer wins. Empty array = all failed.
 func _race(body_text: String, headers: Array) -> PackedByteArray:
 	var state := {"won": false, "winner": PackedByteArray(), "pending": 0}
 	var models: Array = [_model] + FALLBACK_MODELS
@@ -124,30 +115,51 @@ func _launch(model: String, body_text: String, headers: Array, state: Dictionary
 	var http := HTTPRequest.new()
 	http.timeout = REQUEST_TIMEOUT
 	add_child(http)
-	if http.request(ENDPOINT % model, headers, HTTPClient.METHOD_POST, body_text) == OK:
+
+	var gemini_body = JSON.parse_string(body_text)
+	if not gemini_body is Dictionary:
+		print("ERROR: Could not parse outgoing Gemini body.")
+		http.queue_free()
+		state["pending"] -= 1
+		return
+
+	var cloudflare_body := {"model": model, "body": gemini_body}
+	var request_error := http.request(BACKEND_URL, headers, HTTPClient.METHOD_POST, JSON.stringify(cloudflare_body))
+
+	if request_error != OK:
+		print("CLOUDFLARE REQUEST COULD NOT START. Error: ", request_error)
+	else:
 		var r = await http.request_completed
-		if r[1] == 200 and not state["won"]:
+		var response_code: int = r[1]
+		var response_text: String = r[3].get_string_from_utf8()
+
+		print("\n========== CLOUDFLARE RESPONSE ==========")
+		print("MODEL: ", model)
+		print("HTTP STATUS: ", response_code)
+		print("BODY:")
+		print(response_text)
+		print("=========================================\n")
+
+		if response_code == 200 and not state["won"]:
 			state["won"] = true
 			state["winner"] = r[3]
+
 	http.queue_free()
 	state["pending"] -= 1
 
 
 func request_line(id: String, beat: String, player_said: String = "", tone: String = "") -> void:
-	if _api_key == "":
-		failed.emit("no api key")
-		line_ready.emit(_fallback(id))
-		return
 	var user_text := ""
 	if player_said == "":
 		user_text = "(You and Johnson have just sat down for your date. Say your opening line to him.)"
 	else:
 		user_text = 'Johnson says%s: "%s"' % [(" (tone: %s)" % tone) if tone != "" else "", player_said]
+
 	var body := {
 		"system_instruction": {"parts": [{"text": _system_prompt(id, beat, tone)}]},
 		"contents": _contents(id, user_text),
 		"generationConfig": {
-			"thinkingConfig": {"thinkingLevel": "minimal"},   # faster: no long internal reasoning
+			"thinkingConfig": {"thinkingLevel": "minimal"},
 			"maxOutputTokens": 250,
 			"responseMimeType": "application/json",
 			"responseSchema": {
@@ -164,59 +176,127 @@ func request_line(id: String, beat: String, player_said: String = "", tone: Stri
 			}
 		}
 	}
-	var headers := ["Content-Type: application/json", "x-goog-api-key: " + _api_key]
+
+	var headers := ["Content-Type: application/json"]
 	var winner: PackedByteArray = await _race(JSON.stringify(body), headers)
+
 	if winner.is_empty():
 		failed.emit("all models failed or timed out")
 		line_ready.emit(_fallback(id))
 		return
-	var parsed = JSON.parse_string(winner.get_string_from_utf8())
-	var line = null
-	if parsed is Dictionary and parsed.has("candidates"):
-		var txt: String = parsed["candidates"][0]["content"]["parts"][0]["text"]
-		line = JSON.parse_string(txt)
-	if not (line is Dictionary and line.has("text")):
+
+	var raw_response := winner.get_string_from_utf8()
+
+	print("\n========== WINNING GEMINI RESPONSE ==========")
+	print(raw_response)
+	print("=============================================\n")
+
+	var parsed = JSON.parse_string(raw_response)
+
+	if not parsed is Dictionary:
+		print("BAD RESPONSE: Top-level Gemini response is not a Dictionary.")
 		failed.emit("bad response")
 		line_ready.emit(_fallback(id))
 		return
+
+	if not parsed.has("candidates"):
+		print("BAD RESPONSE: Gemini response does not contain 'candidates'.")
+		print("Parsed response: ", parsed)
+		failed.emit("bad response")
+		line_ready.emit(_fallback(id))
+		return
+
+	if parsed["candidates"].is_empty():
+		print("BAD RESPONSE: Gemini returned an empty candidates array.")
+		print("Parsed response: ", parsed)
+		failed.emit("bad response")
+		line_ready.emit(_fallback(id))
+		return
+
+	var candidate = parsed["candidates"][0]
+
+	if not candidate.has("content"):
+		print("BAD RESPONSE: Candidate has no content.")
+		print("Candidate: ", candidate)
+		failed.emit("bad response")
+		line_ready.emit(_fallback(id))
+		return
+
+	var parts = candidate["content"].get("parts", [])
+
+	if parts.is_empty():
+		print("BAD RESPONSE: Candidate content contains no parts.")
+		print("Candidate: ", candidate)
+		failed.emit("bad response")
+		line_ready.emit(_fallback(id))
+		return
+
+	if not parts[0].has("text"):
+		print("BAD RESPONSE: First Gemini part contains no text.")
+		print("Part: ", parts[0])
+		failed.emit("bad response")
+		line_ready.emit(_fallback(id))
+		return
+
+	var txt: String = str(parts[0]["text"])
+
+	print("\n========== STRUCTURED TEXT ==========")
+	print(txt)
+	print("=====================================\n")
+
+	var line = JSON.parse_string(txt)
+
+	if not (line is Dictionary and line.has("text")):
+		print("BAD RESPONSE: Gemini text was not valid expected JSON.")
+		print("Text received: ", txt)
+		print("Parsed value: ", line)
+		failed.emit("bad response")
+		line_ready.emit(_fallback(id))
+		return
+
 	line["choices"] = _normalize_choices(line.get("choices", []))
+
 	if not line.get("emotion", "") in GameState.emotions:
 		line["emotion"] = "neutral"
+
 	line["speaker"] = GameState.characters[id]["name"]
+
 	GameState.history[id].append({"role": "user", "text": user_text})
 	GameState.history[id].append({"role": "model", "text": str(line["text"])})
+
 	var fact := str(line.get("fact", "")).strip_edges()
 	if fact != "" and not GameState.facts[id].has(fact):
 		GameState.facts[id].append(fact)
 		if GameState.facts[id].size() > 12:
 			GameState.facts[id].pop_front()
+
 	line_ready.emit(line)
 
 
-## Generic call for other features (e.g. the prompt minigame): `var res: Dictionary = await GeminiClient.generate(...)`.
-## `contents` is the Gemini chat history: [{"role": "user"/"model", "parts": [{"text": ...}]}, ...]
-## Uses the same model race as request_line. Returns {"ok": true, "text": String} or {"ok": false, "error": String}.
 func generate(system: String, contents: Array, config: Dictionary = {}) -> Dictionary:
-	if _api_key == "":
-		return {"ok": false, "error": "no api key"}
 	var body := {"system_instruction": {"parts": [{"text": system}]}, "contents": contents, "generationConfig": config}
-	var headers := ["Content-Type: application/json", "x-goog-api-key: " + _api_key]
+	var headers := ["Content-Type: application/json"]
 	var winner: PackedByteArray = await _race(JSON.stringify(body), headers)
+
 	if winner.is_empty():
 		return {"ok": false, "error": "all models failed or timed out"}
+
 	var parsed = JSON.parse_string(winner.get_string_from_utf8())
+
 	if not (parsed is Dictionary and parsed.has("candidates") and not parsed["candidates"].is_empty()):
 		return {"ok": false, "error": "bad response"}
+
 	var text := ""
 	for part in parsed["candidates"][0].get("content", {}).get("parts", []):
 		if part.has("text") and not part.get("thought", false):
 			text += part["text"]
+
 	if text == "":
 		return {"ok": false, "error": "empty response"}
+
 	return {"ok": true, "text": text}
 
 
-## Makes sure every choice is {text, tone} with a known tone.
 func _normalize_choices(raw) -> Array:
 	var out: Array = []
 	if raw is Array:
