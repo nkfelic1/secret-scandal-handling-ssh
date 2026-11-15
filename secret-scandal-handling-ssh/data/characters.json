@@ -1,0 +1,84 @@
+{
+  "_note": "Entries marked DRAFT were invented to fill gaps in the design notes. Edit freely.",
+  "emotions": ["neutral", "happy", "laughing", "thinking", "surprised", "blushing", "serious"],
+  "characters": {
+    "nvision_swe": {
+      "name": "NVision Engineer",
+      "traits": ["kisses up to the boss", "gets angry easily when she doesn't get what she wants (bad at hiding it)", "frugal"],
+      "innocent_secret": "She doesn't actually know how to code and has been faking it.",
+      "malicious_secret": "She is overworked and wants to make Johnson pay by leaking company secrets.",
+      "location": "res://art/backgrounds/Modern_Tech_Office_Workspace-1.png",
+      "portraits": {
+        "neutral": "Confident_NVISION_Professional_Character-2.png",
+        "happy": "Joyful_NVISION_Engineer_Portrait-3.png",
+        "thinking": "Thoughtful_Professional_with_NVISION_Badge-4.png",
+        "surprised": "Surprised_NVISION_Anime_Character_Sprite-5.png",
+        "blushing": "Bashful_NVISION_Office_Portrait-6.png"
+      },
+      "portrait_dir": "res://art/characters/nvision_swe/"
+    },
+    "amd_employee": {
+      "name": "DMA Employee",
+      "traits": ["ferocious", "competitive"],
+      "innocent_secret": "She actually got fired from DMA and hasn't told anyone.",
+      "malicious_secret": "DRAFT: She was fired and is selling Johnson's secrets to rehire herself at a rival.",
+      "location": "res://art/backgrounds/Cozy_Neon-Lit_American_Diner.png",
+      "portraits": {
+        "neutral": "Blonde_Tech_Rival_Portrait-3.png",
+        "happy": "Confident_Blonde_Anime_Competitor-1.png",
+        "laughing": "Laughing_Blonde_Anime_Portrait-2.png",
+        "thinking": "Thoughtful_Blonde_AMD_Employee_Illustration-6.png",
+        "surprised": "Surprised_Blonde_Anime_Character_Sprite-4.png",
+        "serious": "Stern_Blonde_Anime_Portrait-5.png"
+      },
+      "portrait_dir": "res://art/characters/amd_employee/"
+    },
+    "childhood_sweetheart": {
+      "name": "Childhood Sweetheart",
+      "traits": ["sweet", "beaten down", "tired"],
+      "innocent_secret": "DRAFT: She is deep in debt and is too proud to ask Johnson for help.",
+      "malicious_secret": "DRAFT: She is drowning in debt and is being paid to pass on what Johnson tells her.",
+      "location": "res://art/backgrounds/Cozy_Sunlit_Coffee_Shop_Interior.png",
+      "portraits": {
+        "neutral": "Freckled_Anime_Barista_Portrait.png",
+        "happy": "Joyful_Apron-Clad_Anime_Portrait.png",
+        "thinking": "Thoughtful_Anime_Barista_Portrait.png",
+        "surprised": "Surprised_Anime_Cafe_Barista.png",
+        "blushing": "Shy_Anime_Barista_Portrait.png"
+      },
+      "portrait_dir": "res://art/characters/childhood_sweetheart/"
+    },
+    "startup_ceo": {
+      "name": "AI Startup CEO",
+      "traits": ["smart", "very busy", "keeps dodging Johnson's attempts to meet"],
+      "innocent_secret": "DRAFT: She is secretly interviewing for a job at a big tech company because she is exhausted.",
+      "malicious_secret": "Her company is failing and she needs Nvidia-level secrets to survive.",
+      "location": "res://art/backgrounds/Tranquil_Spring_Campus_Park-6.png",
+      "portraits": {
+        "neutral": "Red-Haired_CEO_in_Thoughtful_Pose-3.png",
+        "happy": "Cheerful_Redhead_in_Blazer-2.png",
+        "thinking": "Red-Haired_CEO_in_Thoughtful_Pose-3.png",
+        "surprised": "Surprised_AI_Startup_CEO_Portrait-4.png",
+        "blushing": "Shy_AI_CEO_Adjusting_Glasses-5.png",
+        "serious": "Suspicious_Startup_CEO_Portrait-1.png"
+      },
+      "portrait_dir": "res://art/characters/startup_ceo/"
+    },
+    "shareholder": {
+      "name": "Shareholder / Director",
+      "traits": ["haughty", "demanding"],
+      "innocent_secret": "DRAFT: She is quietly selling her shares because she doubts the company's future.",
+      "malicious_secret": "DRAFT: She is feeding secrets to a competitor to tank the stock price before she buys back in.",
+      "location": "res://art/backgrounds/Elegant_Amber-Lit_Restaurant_Interior-6.png",
+      "portraits": {
+        "neutral": "Contemplative_sideways_gaze-2.png",
+        "laughing": "Laughing_silver-haired_woman_in_ivory_suit-1.png",
+        "thinking": "Contemplative_sideways_gaze-2.png",
+        "surprised": "Silver-haired_woman_surprised_expression-3.png",
+        "blushing": "Blushing_silver-haired_woman_in_ivory-4.png",
+        "serious": "Stern_Silver-Haired_Corporate_Director-5.png"
+      },
+      "portrait_dir": "res://art/characters/nvision_shareholder/"
+    }
+  }
+}
