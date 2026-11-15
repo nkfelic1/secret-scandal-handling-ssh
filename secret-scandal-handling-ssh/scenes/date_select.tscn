@@ -35,6 +35,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1")
 
 [node name="Background" type="TextureRect" parent="."]
@@ -44,11 +45,12 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 texture = ExtResource("2")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Columns" type="Control" parent="."]
+[node name="Dim" type="ColorRect" parent="."]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -56,126 +58,38 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="nvision_swe" type="Button" parent="Columns"]
-layout_mode = 0
-offset_left = 4.0
-offset_top = 70.0
-offset_right = 278.0
-offset_bottom = 630.0
-theme_override_styles/normal = SubResource("Empty")
-theme_override_styles/hover = SubResource("Hover")
-theme_override_styles/pressed = SubResource("Hover")
-theme_override_styles/focus = SubResource("Hover")
-flat = true
-
-[node name="Dim" type="ColorRect" parent="Columns/nvision_swe"]
-visible = false
-modulate = Color(1, 1, 1, 1)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 mouse_filter = 2
-color = Color(0, 0, 0, 0.45)
+color = Color(0, 0, 0, 0)
 
-[node name="amd_employee" type="Button" parent="Columns"]
-layout_mode = 0
-offset_left = 286.0
-offset_top = 70.0
-offset_right = 534.0
-offset_bottom = 630.0
-theme_override_styles/normal = SubResource("Empty")
-theme_override_styles/hover = SubResource("Hover")
-theme_override_styles/pressed = SubResource("Hover")
-theme_override_styles/focus = SubResource("Hover")
-flat = true
+[node name="Girls" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, -3.07)
+scale = Vector2(0.64257, 0.64257)
 
-[node name="Dim" type="ColorRect" parent="Columns/amd_employee"]
+[node name="nvision_swe" type="Polygon2D" parent="Girls"]
 visible = false
-modulate = Color(1, 1, 1, 1)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 0.45)
+texture = ExtResource("2")
+polygon = PackedVector2Array(280, 116, 262, 120, 243, 120, 229, 125, 169, 166, 138, 197, 119, 229, 84, 267, 72, 289, 70, 315, 64, 328, 64, 350, 58, 371, 42, 393, 36, 407, 35, 444, 12, 480, 0, 484, 0, 847, 20, 847, 52, 856, 57, 863, 62, 888, 71, 902, 75, 915, 86, 923, 110, 924, 123, 938, 130, 991, 130, 1007, 126, 1018, 130, 1044, 124, 1061, 123, 1076, 102, 1102, 98, 1129, 429, 1129, 425, 1033, 429, 881, 449, 759, 439, 727, 430, 612, 431, 493, 425, 457, 428, 303, 411, 290, 407, 272, 387, 240, 349, 159, 334, 146, 304, 141, 294, 126)
 
-[node name="childhood_sweetheart" type="Button" parent="Columns"]
-layout_mode = 0
-offset_left = 542.0
-offset_top = 70.0
-offset_right = 764.0
-offset_bottom = 630.0
-theme_override_styles/normal = SubResource("Empty")
-theme_override_styles/hover = SubResource("Hover")
-theme_override_styles/pressed = SubResource("Hover")
-theme_override_styles/focus = SubResource("Hover")
-flat = true
-
-[node name="Dim" type="ColorRect" parent="Columns/childhood_sweetheart"]
+[node name="amd_employee" type="Polygon2D" parent="Girls"]
 visible = false
-modulate = Color(1, 1, 1, 1)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 0.45)
+texture = ExtResource("2")
+polygon = PackedVector2Array(700, 130, 668, 132, 632, 146, 619, 146, 589, 154, 559, 167, 492, 227, 449, 295, 434, 298, 429, 303, 426, 457, 432, 493, 431, 612, 440, 727, 450, 758, 430, 881, 426, 985, 430, 1129, 830, 1129, 834, 1026, 830, 903, 790, 831, 765, 723, 785, 540, 789, 473, 795, 458, 789, 439, 779, 423, 779, 415, 789, 396, 795, 375, 793, 329, 769, 275, 762, 234, 748, 190, 720, 164, 719, 148, 715, 139)
 
-[node name="startup_ceo" type="Button" parent="Columns"]
-layout_mode = 0
-offset_left = 772.0
-offset_top = 70.0
-offset_right = 1007.0
-offset_bottom = 630.0
-theme_override_styles/normal = SubResource("Empty")
-theme_override_styles/hover = SubResource("Hover")
-theme_override_styles/pressed = SubResource("Hover")
-theme_override_styles/focus = SubResource("Hover")
-flat = true
-
-[node name="Dim" type="ColorRect" parent="Columns/startup_ceo"]
+[node name="childhood_sweetheart" type="Polygon2D" parent="Girls"]
 visible = false
-modulate = Color(1, 1, 1, 1)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 0.45)
+texture = ExtResource("2")
+polygon = PackedVector2Array(992, 180, 969, 187, 941, 202, 910, 233, 895, 257, 874, 279, 872, 331, 856, 360, 847, 431, 821, 462, 797, 462, 790, 473, 786, 540, 766, 723, 791, 831, 831, 903, 835, 980, 831, 1129, 1185, 1129, 1189, 951, 1199, 815, 1195, 591, 1204, 493, 1194, 429, 1184, 297, 1179, 286, 1162, 284, 1156, 280, 1150, 264, 1129, 245, 1120, 224, 1110, 213, 1097, 210, 1060, 187, 1037, 180)
 
-[node name="shareholder" type="Button" parent="Columns"]
-layout_mode = 0
-offset_left = 1015.0
-offset_top = 70.0
-offset_right = 1276.0
-offset_bottom = 630.0
-theme_override_styles/normal = SubResource("Empty")
-theme_override_styles/hover = SubResource("Hover")
-theme_override_styles/pressed = SubResource("Hover")
-theme_override_styles/focus = SubResource("Hover")
-flat = true
-
-[node name="Dim" type="ColorRect" parent="Columns/shareholder"]
+[node name="startup_ceo" type="Polygon2D" parent="Girls"]
 visible = false
-modulate = Color(1, 1, 1, 1)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 0.45)
+texture = ExtResource("2")
+polygon = PackedVector2Array(1291, 130, 1282, 143, 1248, 154, 1223, 167, 1222, 178, 1212, 201, 1211, 218, 1188, 248, 1181, 281, 1186, 302, 1195, 429, 1205, 493, 1196, 591, 1200, 815, 1190, 951, 1186, 1129, 1640, 1129, 1640, 1001, 1597, 798, 1595, 702, 1536, 526, 1538, 491, 1523, 469, 1523, 370, 1533, 338, 1527, 307, 1511, 270, 1506, 248, 1492, 229, 1489, 219, 1482, 213, 1471, 212, 1466, 208, 1465, 190, 1458, 180, 1363, 166, 1335, 143, 1314, 146, 1301, 132)
+
+[node name="shareholder" type="Polygon2D" parent="Girls"]
+visible = false
+texture = ExtResource("2")
+polygon = PackedVector2Array(1759, 140, 1715, 153, 1675, 174, 1653, 191, 1640, 205, 1602, 265, 1581, 309, 1580, 347, 1590, 375, 1590, 400, 1593, 408, 1609, 423, 1632, 426, 1643, 439, 1658, 442, 1662, 447, 1660, 462, 1647, 475, 1608, 486, 1604, 497, 1599, 500, 1581, 502, 1560, 514, 1542, 516, 1537, 522, 1556, 587, 1596, 702, 1598, 798, 1641, 1001, 1641, 1129, 1991, 1129, 1991, 738, 1971, 738, 1965, 732, 1969, 700, 1969, 665, 1953, 630, 1951, 569, 1941, 535, 1933, 526, 1910, 519, 1873, 475, 1873, 436, 1890, 406, 1891, 380, 1905, 352, 1903, 334, 1895, 308, 1895, 291, 1878, 256, 1864, 201, 1847, 176, 1842, 172, 1828, 172, 1822, 169, 1814, 151, 1804, 139)
 
 [node name="Header" type="PanelContainer" parent="."]
 layout_mode = 0
@@ -259,3 +173,8 @@ autowrap_mode = 3
 unique_name_in_owner = true
 layout_mode = 2
 text = "Re-roll spy (debug)"
+
+[node name="EndGameButton" type="Button" parent="Debug"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "End game now (debug)"
