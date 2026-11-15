@@ -39,6 +39,11 @@ func _ready() -> void:
 		)
 		return
 
+	# Everyone left today is either dumped or wrongly accused: move on (accusation / next day).
+	if GameState.day_finished():
+		GameState.go_next.call_deferred()
+		return
+
 	%Sub.text = "Day %d  -  %d dates left" % [
 		GameState.day,
 		GameState.dates_left
@@ -230,7 +235,13 @@ func _set_hover(id: String) -> void:
 		.trim_suffix(" Workspace")
 	)
 
-	if GameState.dumped[id]:
+	if GameState.is_accused(id):
+		_info_detail.text = (
+			"You accused %s of leaking. She's done with you."
+			% character["name"]
+		)
+
+	elif GameState.dumped[id]:
 		_info_detail.text = (
 			"%s ended things with you."
 			% character["name"]
@@ -346,7 +357,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _on_pick(id: String) -> void:
-	if GameState.dumped[id]:
+	if not GameState.can_date(id):
 		return
 
 	if GameState.has_dated_today(id):
