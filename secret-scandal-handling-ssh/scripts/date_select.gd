@@ -1,61 +1,60 @@
 extends Control
-## Test scene: pick which of the 5 characters to take on a date. Shows the hidden spy for debugging (F1 toggles).
+## Date picker. Layout (clickable columns, panels, fonts) lives in date_select.tscn - edit it in the 2D editor.
+## Each button under "Columns" is named after a character id from data/characters.json.
 
-var _debug_label: Label
+@onready var _columns: Control = %Columns
+@onready var _info_name: Label = %InfoName
+@onready var _info_detail: Label = %InfoDetail
+@onready var _debug_box: Control = %Debug
+@onready var _debug_label: Label = %DebugLabel
+
 
 func _ready() -> void:
-	var bg := ColorRect.new()
-	bg.color = Color(0.09, 0.09, 0.13)
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(bg)
-
-	var title := Label.new()
-	title.text = "Choose a date  (day %d - %d dates left)" % [GameState.day, GameState.dates_left]
-	title.add_theme_font_size_override("font_size", 32)
-	title.position = Vector2(60, 40)
-	add_child(title)
-
-	var box := VBoxContainer.new()
-	box.position = Vector2(60, 120)
-	box.custom_minimum_size = Vector2(700, 0)
-	box.add_theme_constant_override("separation", 14)
-	add_child(box)
-
-	for id in GameState.characters.keys():
-		var c: Dictionary = GameState.characters[id]
-		var b := Button.new()
-		b.text = "%s   -   %s" % [c["name"], c["location"].get_file().get_basename().replace("_", " ")]
-		b.custom_minimum_size = Vector2(700, 64)
-		b.add_theme_font_size_override("font_size", 22)
-		b.pressed.connect(_on_pick.bind(id))
-		box.add_child(b)
-
-	var again := Button.new()
-	again.text = "Re-roll the spy (new run)"
-	again.pressed.connect(func():
+	%Sub.text = "Day %d  -  %d dates left" % [GameState.day, GameState.dates_left]
+	for btn in _columns.get_children():
+		var id := String(btn.name)
+		if not GameState.characters.has(id):
+			continue
+		btn.pressed.connect(_on_pick.bind(id))
+		btn.mouse_entered.connect(_hover.bind(id))
+		btn.focus_entered.connect(_hover.bind(id))
+		btn.mouse_exited.connect(_unhover)
+	%BackButton.pressed.connect(func(): get_tree().change_scene_to_file("res://scenes/home.tscn"))
+	%RerollButton.pressed.connect(func():
 		GameState.new_run()
 		_update_debug())
-	box.add_child(again)
-
-	var home := Button.new()
-	home.text = "Back to start menu"
-	home.pressed.connect(func(): get_tree().change_scene_to_file("res://scenes/home.tscn"))
-	box.add_child(home)
-
-	_debug_label = Label.new()
-	_debug_label.position = Vector2(60, 680)
-	_debug_label.add_theme_color_override("font_color", Color(1, 0.6, 0.3))
-	add_child(_debug_label)
 	_update_debug()
 
 
+func _hover(id: String) -> void:
+	var c: Dictionary = GameState.characters[id]
+	_info_name.text = c["name"]
+	_info_detail.text = "%s   -   %s" % [
+		c["location"].get_file().get_basename().replace("_", " ").trim_suffix(" Interior").trim_suffix(" Workspace"),
+		", ".join(c["traits"].slice(0, 2))]
+	# dim everyone else so the hovered girl stands out
+	for btn in _columns.get_children():
+		var dim := btn.get_node_or_null("Dim")
+		if dim:
+			dim.visible = String(btn.name) != id
+
+
+func _unhover() -> void:
+	_info_name.text = "Hover over someone"
+	_info_detail.text = "Click a girl to start your date"
+	for btn in _columns.get_children():
+		var dim := btn.get_node_or_null("Dim")
+		if dim:
+			dim.visible = false
+
+
 func _update_debug() -> void:
-	_debug_label.text = "DEBUG (F1 hides): the spy this run is %s" % GameState.characters[GameState.spy_id]["name"]
+	_debug_label.text = "DEBUG (F1 hides): spy is %s" % GameState.characters[GameState.spy_id]["name"]
 
 
 func _input(e: InputEvent) -> void:
 	if e is InputEventKey and e.pressed and e.keycode == KEY_F1:
-		_debug_label.visible = not _debug_label.visible
+		_debug_box.visible = not _debug_box.visible
 
 
 func _on_pick(id: String) -> void:
