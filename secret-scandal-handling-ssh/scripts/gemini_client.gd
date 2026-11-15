@@ -27,7 +27,7 @@ const HINT_LEVELS := [
 ]
 
 const FALLBACK_MODELS := ["gemini-flash-lite-latest", "gemini-3.1-flash-lite"]
-const HEDGE_DELAY := 2.5
+const HEDGE_DELAY := 6.0
 const REQUEST_TIMEOUT := 10.0
 
 var _model := "gemini-3.5-flash-lite"

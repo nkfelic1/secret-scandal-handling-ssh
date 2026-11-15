@@ -44,6 +44,7 @@ const ACCUSATION_SCANDALS := {
 	"startup_ceo": "NVision CEO's hidden relationship with a rival startup founder raises conflict-of-interest concerns.",
 	"shareholder": "NVision CEO secretly dating a member of his own Board, prompting a governance and board-independence crisis.",
 }
+
 var accused: Dictionary = {}        # character_id -> day she was WRONGLY accused. She has broken up with him for good.
 var wrong_accusations: Array = []   # [{id, day}] in the order they happened (for news/ending screens)
 var accused_today := false          # has today's accusation already been made?
@@ -130,7 +131,7 @@ func is_accused(id: String) -> bool:
 
 
 func day_finished() -> bool:
-	_recount_dates()   # someone may have just dumped him
+	_recount_dates()
 	return dates_left <= 0
 
 
@@ -219,11 +220,11 @@ func apply_tone(id: String, tone: String) -> int:
 	if not TONE_TRUST.has(tone):
 		tone = "neutral"
 	var delta: int = TONE_TRUST[tone]
-	trustmeter += delta                                  # raw points: kind adds, mean subtracts
+	trustmeter += delta
 	if tone == "rude" or tone == "cruel":
 		rude_streak[id] += 1
 		if rude_streak[id] >= 2:
-			delta -= 2 * mini(rude_streak[id] - 1, 3)   # being nasty again and again hurts a little more each time
+			delta -= 2 * mini(rude_streak[id] - 1, 3)
 	else:
 		rude_streak[id] = 0
 	tone_counts[tone] += 1

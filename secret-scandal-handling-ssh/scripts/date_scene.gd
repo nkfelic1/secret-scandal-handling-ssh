@@ -74,13 +74,6 @@ func _ready() -> void:
 			randi() % keys.size()
 		]
 
-	# A woman Johnson wrongly accused of leaking will never date him again.
-	if GameState.is_accused(char_id):
-		get_tree().change_scene_to_file.call_deferred(
-			GameState.DATE_SELECT_SCENE
-		)
-		return
-
 	# --------------------------------------------------
 	# Background
 	# --------------------------------------------------
@@ -121,6 +114,9 @@ func _ready() -> void:
 				"res://scenes/date_select.tscn"
 			)
 	)
+
+	# Create debug button that immediately finishes the date.
+	_create_debug_end_date_button()
 
 	# --------------------------------------------------
 	# Gemini
@@ -641,6 +637,63 @@ func _end_date() -> void:
 # --------------------------------------------------
 # DEBUG
 # --------------------------------------------------
+
+func _create_debug_end_date_button() -> void:
+	var button := Button.new()
+
+	button.name = "DebugEndDateButton"
+	button.text = "DEBUG: End Date"
+
+	# Anchor the button to the upper-right of the screen.
+	button.set_anchors_preset(
+		Control.PRESET_TOP_RIGHT
+	)
+
+	# Position relative to the upper-right corner.
+	button.position = Vector2(
+		-220.0,
+		60.0
+	)
+
+	button.size = Vector2(
+		190.0,
+		45.0
+	)
+
+	button.mouse_default_cursor_shape = (
+		Control.CURSOR_POINTING_HAND
+	)
+
+	button.pressed.connect(
+		_debug_end_date
+	)
+
+	add_child(button)
+
+	# Keep the debug button above the other UI.
+	move_child(
+		button,
+		get_child_count() - 1
+	)
+
+
+func _debug_end_date() -> void:
+	# Stop any visual animations that are currently running.
+	if _typing:
+		_typing.kill()
+		_typing = null
+
+	_stop_thinking()
+
+	# Reset any pending Gemini-response state.
+	_johnson_speaking = false
+	_johnson_text_finished = false
+	_response_ready = false
+	_pending_response.clear()
+
+	# Use the exact same completion logic as a normal date.
+	_end_date()
+
 
 func _update_debug() -> void:
 	_debug.text = (
