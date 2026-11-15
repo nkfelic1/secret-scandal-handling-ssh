@@ -14,7 +14,6 @@ const REWARD_SCORE := 75
 ## The finished work counts more than the prompt, which makes high scores easier.
 const WORK_WEIGHT := 6.0
 const PROMPT_WEIGHT := 4.0
-const DEFAULT_TIME := 90.0
 
 ## Johnson's expressions for the lead-in ("pose" in minigame_tasks.json).
 const JOHNSON_DIR := "res://art/characters/johnson_jeng/"
@@ -68,7 +67,6 @@ const KINDS := {
 var _task: Dictionary = {}
 var _kind: Dictionary = {}
 var _body: TextEdit             # the left-app field the player pastes into
-var _time_left := DEFAULT_TIME
 var _running := false
 var _busy := false
 var _history: Array = []        # Gemini contents for the chat (multi-turn, so "make it shorter" works)
@@ -88,7 +86,6 @@ func _ready() -> void:
 	if _task.is_empty():
 		_task = GameState.minigame_task(1)   # e.g. running the scene directly on a day with no task
 	_kind = KINDS.get(_task.get("kind", "email"), KINDS["email"])
-	_time_left = float(_task.get("time", DEFAULT_TIME))
 	_setup_left_app()
 
 	%TaskText.text = _task.get("task", "")
@@ -99,7 +96,6 @@ func _ready() -> void:
 	if _kind["instructions"] != "":
 		%InstrText.text = _kind["instructions"]
 		%InstrText.visible = true
-	_update_timer_label()
 	_set_inputs_enabled(false)
 
 	%StartButton.pressed.connect(_start)
@@ -287,7 +283,7 @@ func _setup_left_app() -> void:
 			intro_head = "Editing %s" % _task.get("filename", "main.py")
 		_:
 			_body = %EmailBody
-			%ToField.text = ""
+			%ToField.text = _task.get("to", "")   # pre-filled: typing an address isn't part of the prompting skill
 			%SubjectField.text = _task.get("subject", "")
 			intro_head = "To: %s" % _task.get("to", "")
 	if kind != "email":
@@ -340,22 +336,6 @@ func _start() -> void:
 	_running = true
 	_set_inputs_enabled(true)
 	%PromptInput.grab_focus()
-
-
-func _process(delta: float) -> void:
-	if not _running:
-		return
-	_time_left = maxf(0.0, _time_left - delta)
-	_update_timer_label()
-	if _time_left <= 0.0:
-		_send(true)
-
-
-func _update_timer_label() -> void:
-	var secs := int(ceil(_time_left))
-	%TimerLabel.text = "%d:%02d" % [secs / 60, secs % 60]
-	var urgent := _running and secs <= 10
-	%TimerLabel.add_theme_color_override("font_color", Color(1, 0.35, 0.35) if urgent else Color(1, 0.85, 0.95))
 
 
 func _set_inputs_enabled(on: bool) -> void:
@@ -441,22 +421,17 @@ func _copy_reply() -> void:
 
 # --- Sending + grading --------------------------------------------------------
 
-func _send(timed_out := false) -> void:
+func _send() -> void:
 	if not _running:
 		return
 	var work: String = _body.text.strip_edges()
 	var noun: String = _kind["noun"]
-	if work == "" and not timed_out:
+	if work == "":
 		_toast("Write or paste something first!", 1.5)
 		return
 	_running = false
 	_set_inputs_enabled(false)
 	%CopyButton.disabled = true
-
-	if work == "":
-		_finish("Time's up!", "Nothing was sent.",
-			"Your %s stayed empty. Next time, prompt early and paste the reply in." % noun, 0)
-		return
 
 	# "being sent" beat: fade the draft out, then grade
 	_toast(_kind["sending"], 0.0)
@@ -473,8 +448,6 @@ func _send(timed_out := false) -> void:
 		return
 	var total := int(round(grade["work_score"] * WORK_WEIGHT + grade["prompt_score"] * PROMPT_WEIGHT))
 	var title: String = ("Great %s!" % noun) if total >= REWARD_SCORE else (_kind["done"] if total >= 50 else "Yikes... it's already out there.")
-	if timed_out:
-		title = "Time's up! " + title
 	_finish(title, "Score: %d / 100   (%s %d/10, prompts %d/10)" % [total, noun, grade["work_score"], grade["prompt_score"]],
 		"%s\n\n[color=#ff8fd6][b]Prompt tip:[/b][/color] %s" % [grade["feedback"], grade["tip"]], total)
 

@@ -1,11 +1,10 @@
 {
-	"_help": "One prompt-engineering minigame per day. timing: before_dates | after_dates. kind: email | post | text | code. time = seconds on the timer. intro = Johnson's lead-in lines (one click each). pose = his expression (smile, laugh, thinking, surprised, blushing, serious). night = darker background. headline = news line on the 'DAY N' card shown at the start of before_dates days.",
+	"_help": "One prompt-engineering minigame per day. timing: before_dates | after_dates. kind: email | post | text | code. intro = Johnson's lead-in lines (one click each). pose = his expression (smile, laugh, thinking, surprised, blushing, serious). night = darker background. headline = news line on the 'DAY N' card shown at the start of before_dates days.",
 	"days": {
 		"1": {
 			"timing": "after_dates",
 			"kind": "email",
-			"time": 90,
-			"to": "president@nvision.com",
+			"to": "president@gmail.com",
 			"subject": "My sincere apology",
 			"task": "This morning the President told you news of your affair has leaked. Write the President an email apologizing: take responsibility, no excuses, and say how you'll handle it.",
 			"intro": [
@@ -18,7 +17,6 @@
 		"2": {
 			"timing": "before_dates",
 			"kind": "post",
-			"time": 90,
 			"account": "NVision",
 			"handle": "@NVision",
 			"task": "Overnight, confidential NVision plans were leaked online. Write a post for NVision's official account to do damage control: reassure customers and investors, don't reveal more details, and don't blame anyone yet.",
@@ -32,7 +30,6 @@
 		"3": {
 			"timing": "before_dates",
 			"kind": "text",
-			"time": 90,
 			"incoming": "Hey... people are saying things about you. Is it true you're seeing other people??",
 			"task": "Word about your love life is spreading and your phone won't stop buzzing. Pick one of the women you're seeing and text her to smooth things over. Keep it short, warm and believable.",
 			"intro": [
@@ -45,7 +42,6 @@
 		"4": {
 			"timing": "before_dates",
 			"kind": "code",
-			"time": 120,
 			"filename": "leak_detector.py",
 			"task": "Engineering is buried in leak fallout, so you're coding today. Write a Python function flag_suspicious(downloads): given (employee, file_count) pairs, return employees who downloaded over 50 confidential files.",
 			"intro": [
@@ -58,7 +54,6 @@
 		"5": {
 			"timing": "before_dates",
 			"kind": "post",
-			"time": 90,
 			"account": "Johnson Jeng",
 			"handle": "@JohnsonJeng",
 			"task": "News of your affair just went public. Write a post from your personal account to do damage control: take responsibility, protect NVision's reputation, and keep it short and sincere.",
