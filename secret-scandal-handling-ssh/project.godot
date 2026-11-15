@@ -18,7 +18,26 @@ config/name="SecretScandalHandlingSSH"
 run/main_scene="uid://bwu6turaufg44"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
+<<<<<<<HEADrun/main_scene="res://scenes/home.tscn"
 
+<<<<<<< Updated upstream
+=======
+[autoload]
+
+Dialogic="*uid://ds2q0uclmolvu"
+GameState="*res://scripts/game_state.gd"
+GeminiClient="*res://scripts/gemini_client.gd"
+
+[dialogic]
+
+directories/dch_directory={}
+directories/dtl_directory={}
+layout/style_directory={}
+layout/style_list=[]
+layout/default_style="Default"
+variables={}
+
+>>>>>>> Stashed changes
 [display]
 
 window/size/viewport_width=1280

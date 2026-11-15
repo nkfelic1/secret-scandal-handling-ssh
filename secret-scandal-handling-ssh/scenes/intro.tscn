@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://bwu6turaufg44"]
+
+[ext_resource type="Script" uid="uid://b240tcnaffxsm" path="res://scripts/intro.gd" id="1_k28gp"]
+[ext_resource type="Texture2D" path="res://art/intro-scene/Midnight_Call_in_the_City-1.png" id="2_uv2ri"]
+
+[node name="intro" type="Control" unique_id=62957879]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_k28gp")
+
+[node name="background" type="TextureRect" parent="." unique_id=2063524951]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_uv2ri")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="nextButton" type="Button" parent="." unique_id=652025023]
+layout_mode = 0
+offset_left = 1119.0
+offset_top = 641.0
+offset_right = 1177.0
+offset_bottom = 685.0
+
+[connection signal="pressed" from="nextButton" to="." method="_on_next_button_pressed"]
