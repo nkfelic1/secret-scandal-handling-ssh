@@ -26,12 +26,17 @@ const HINT_LEVELS := [
 	"HINT LEVEL 4 (late in the game): you are visibly cracking. Every reply includes a specific tell and you almost say it outright, but you still never state it in full.",
 ]
 
-const FALLBACK_MODELS := ["gemini-flash-lite-latest", "gemini-3.1-flash-lite"]
+# Each model has its own free-tier daily quota, so more fallbacks = more requests per day.
+const FALLBACK_MODELS := ["gemini-flash-lite-latest", "gemini-3.1-flash-lite", "gemini-3-flash-preview",
+	"gemini-3.5-flash", "gemini-3.1-flash-lite-preview"]
 const HEDGE_DELAY := 2.5       # seconds before also asking a second model
-const REQUEST_TIMEOUT := 10.0  # give up on any single request after this long
+const REQUEST_TIMEOUT := 10.0  # give up on any single date-line request after this long
+const LONG_TIMEOUT := 30.0     # generate() default: emails, posts, code and grading are longer replies
+const DEFAULT_COOLDOWN := 60.0 # skip a rate-limited model this long if Google gives no retryDelay
 
 var _api_key := ""
 var _model := "gemini-3.5-flash-lite"
+var _blocked_until := {}       # model -> Time.get_ticks_msec() when it may be tried again
 
 
 func _ready() -> void:
@@ -103,13 +108,18 @@ func _contents(id: String, user_text: String) -> Array:
 
 ## Sends the request to the main model. If it has not answered within HEDGE_DELAY seconds (or failed),
 ## asks the next model in parallel. The first successful (HTTP 200) answer wins. Empty array = all failed.
-func _race(body_text: String, headers: Array) -> PackedByteArray:
+func _race(body_text: String, headers: Array, timeout: float = REQUEST_TIMEOUT) -> PackedByteArray:
 	var state := {"won": false, "winner": PackedByteArray(), "pending": 0}
-	var models: Array = [_model] + FALLBACK_MODELS
+	var models: Array = []
+	for m in [_model] + FALLBACK_MODELS:
+		if Time.get_ticks_msec() >= _blocked_until.get(m, 0) and not models.has(m):
+			models.append(m)
+	if models.is_empty():   # everything is cooling down: try them all anyway rather than give up
+		models = [_model] + FALLBACK_MODELS
 	for m in models:
 		if state["won"]:
 			break
-		_launch(m, body_text, headers, state)
+		_launch(m, body_text, headers, state, timeout)
 		var waited := 0.0
 		while not state["won"] and state["pending"] > 0 and waited < HEDGE_DELAY:
 			await get_tree().process_frame
@@ -119,16 +129,24 @@ func _race(body_text: String, headers: Array) -> PackedByteArray:
 	return state["winner"]
 
 
-func _launch(model: String, body_text: String, headers: Array, state: Dictionary) -> void:
+func _launch(model: String, body_text: String, headers: Array, state: Dictionary, timeout: float) -> void:
 	state["pending"] += 1
 	var http := HTTPRequest.new()
-	http.timeout = REQUEST_TIMEOUT
+	http.timeout = timeout
 	add_child(http)
 	if http.request(ENDPOINT % model, headers, HTTPClient.METHOD_POST, body_text) == OK:
 		var r = await http.request_completed
 		if r[1] == 200 and not state["won"]:
 			state["won"] = true
 			state["winner"] = r[3]
+		elif r[1] == 429 or r[1] == 404:   # out of quota / model gone: stop asking it for a while
+			var wait := DEFAULT_COOLDOWN
+			var m := RegEx.create_from_string("\"retryDelay\":\\s*\"(\\d+)").search(r[3].get_string_from_utf8())
+			if m:
+				wait = float(m.get_string(1))
+			elif r[1] == 404:
+				wait = 3600.0
+			_blocked_until[model] = Time.get_ticks_msec() + int(wait * 1000.0)
 	http.queue_free()
 	state["pending"] -= 1
 
@@ -165,16 +183,14 @@ func request_line(id: String, beat: String, player_said: String = "", tone: Stri
 		}
 	}
 	var headers := ["Content-Type: application/json", "x-goog-api-key: " + _api_key]
-	var winner: PackedByteArray = await _race(JSON.stringify(body), headers)
-	if winner.is_empty():
-		failed.emit("all models failed or timed out")
-		line_ready.emit(_fallback(id))
-		return
-	var parsed = JSON.parse_string(winner.get_string_from_utf8())
 	var line = null
-	if parsed is Dictionary and parsed.has("candidates"):
-		var txt: String = parsed["candidates"][0]["content"]["parts"][0]["text"]
-		line = JSON.parse_string(txt)
+	for attempt in 2:   # a cut-off or malformed reply gets one retry before the fallback line
+		var winner: PackedByteArray = await _race(JSON.stringify(body), headers)
+		if winner.is_empty():
+			break
+		line = JSON.parse_string(_reply_text(JSON.parse_string(winner.get_string_from_utf8())))
+		if line is Dictionary and line.has("text"):
+			break
 	if not (line is Dictionary and line.has("text")):
 		failed.emit("bad response")
 		line_ready.emit(_fallback(id))
@@ -196,24 +212,31 @@ func request_line(id: String, beat: String, player_said: String = "", tone: Stri
 ## Generic call for other features (e.g. the prompt minigame): `var res: Dictionary = await GeminiClient.generate(...)`.
 ## `contents` is the Gemini chat history: [{"role": "user"/"model", "parts": [{"text": ...}]}, ...]
 ## Uses the same model race as request_line. Returns {"ok": true, "text": String} or {"ok": false, "error": String}.
-func generate(system: String, contents: Array, config: Dictionary = {}) -> Dictionary:
+func generate(system: String, contents: Array, config: Dictionary = {}, timeout: float = LONG_TIMEOUT) -> Dictionary:
 	if _api_key == "":
 		return {"ok": false, "error": "no api key"}
 	var body := {"system_instruction": {"parts": [{"text": system}]}, "contents": contents, "generationConfig": config}
 	var headers := ["Content-Type: application/json", "x-goog-api-key: " + _api_key]
-	var winner: PackedByteArray = await _race(JSON.stringify(body), headers)
+	var winner: PackedByteArray = await _race(JSON.stringify(body), headers, timeout)
 	if winner.is_empty():
 		return {"ok": false, "error": "all models failed or timed out"}
-	var parsed = JSON.parse_string(winner.get_string_from_utf8())
-	if not (parsed is Dictionary and parsed.has("candidates") and not parsed["candidates"].is_empty()):
-		return {"ok": false, "error": "bad response"}
-	var text := ""
-	for part in parsed["candidates"][0].get("content", {}).get("parts", []):
-		if part.has("text") and not part.get("thought", false):
-			text += part["text"]
+	var text := _reply_text(JSON.parse_string(winner.get_string_from_utf8()))
 	if text == "":
-		return {"ok": false, "error": "empty response"}
+		return {"ok": false, "error": "empty or bad response"}
 	return {"ok": true, "text": text}
+
+
+## Joins the answer parts of a generateContent response (skipping "thought" parts). "" if none.
+func _reply_text(parsed) -> String:
+	if not (parsed is Dictionary and parsed.get("candidates", []) is Array and not parsed.get("candidates", []).is_empty()):
+		return ""
+	var text := ""
+	var content = parsed["candidates"][0].get("content", {})
+	if content is Dictionary:
+		for part in content.get("parts", []):
+			if part is Dictionary and part.has("text") and not part.get("thought", false):
+				text += str(part["text"])
+	return text
 
 
 ## Makes sure every choice is {text, tone} with a known tone.
