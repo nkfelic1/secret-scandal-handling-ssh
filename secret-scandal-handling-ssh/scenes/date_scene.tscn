@@ -106,3 +106,48 @@ offset_bottom = 76.0
 theme_override_colors/font_color = Color(1, 0.6, 0.3, 1)
 text = "DEBUG: spy"
 autowrap_mode = 3
+
+[node name="TrustRow" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 360.0
+offset_top = 14.0
+offset_right = 880.0
+offset_bottom = 44.0
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="TrustLabel" type="Label" parent="TrustRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 20
+text = "Trustmeter"
+
+[node name="TrustBar" type="ProgressBar" parent="TrustRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 18)
+layout_mode = 2
+size_flags_vertical = 4
+value = 50.0
+show_percentage = false
+
+[node name="TrustState" type="Label" parent="TrustRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
+theme_override_constants/outline_size = 6
+text = "Friendly"
+
+[node name="TrustDelta" type="Label" parent="."]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = 800.0
+offset_top = 40.0
+offset_right = 880.0
+offset_bottom = 70.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 26
+text = "+0"
