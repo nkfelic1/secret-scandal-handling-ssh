@@ -1,0 +1,1113 @@
+diff --git a/secret-scandal-handling-ssh/scenes/accuse_select.tscn b/secret-scandal-handling-ssh/scenes/accuse_select.tscn
+new file mode 100644
+index 0000000..9613370
+--- /dev/null
++++ b/secret-scandal-handling-ssh/scenes/accuse_select.tscn
+@@ -0,0 +1,286 @@
++[gd_scene load_steps=7 format=3]
++
++[ext_resource type="Script" path="res://scripts/accuse_select.gd" id="1"]
++[ext_resource type="Texture2D" path="res://art/characters/misc_opening/selection_of_girls.png" id="2"]
++
++[sub_resource type="StyleBoxFlat" id="Bar"]
++bg_color = Color(0.05, 0.02, 0.03, 0.85)
++corner_radius_top_left = 14
++corner_radius_top_right = 14
++corner_radius_bottom_right = 14
++corner_radius_bottom_left = 14
++content_margin_left = 20.0
++content_margin_top = 10.0
++content_margin_right = 20.0
++content_margin_bottom = 10.0
++
++[sub_resource type="StyleBoxFlat" id="Popup"]
++bg_color = Color(0.07, 0.03, 0.05, 0.97)
++border_width_left = 3
++border_width_top = 3
++border_width_right = 3
++border_width_bottom = 3
++border_color = Color(0.95, 0.22, 0.25, 0.95)
++corner_radius_top_left = 16
++corner_radius_top_right = 16
++corner_radius_bottom_right = 16
++corner_radius_bottom_left = 16
++content_margin_left = 24.0
++content_margin_top = 20.0
++content_margin_right = 24.0
++content_margin_bottom = 20.0
++
++[sub_resource type="StyleBoxFlat" id="PortraitFrame"]
++bg_color = Color(0.12, 0.05, 0.08, 1)
++corner_radius_top_left = 10
++corner_radius_top_right = 10
++corner_radius_bottom_right = 10
++corner_radius_bottom_left = 10
++
++[sub_resource type="StyleBoxFlat" id="Danger"]
++bg_color = Color(0.7, 0.1, 0.14, 1)
++corner_radius_top_left = 8
++corner_radius_top_right = 8
++corner_radius_bottom_right = 8
++corner_radius_bottom_left = 8
++content_margin_left = 16.0
++content_margin_right = 16.0
++
++[node name="AccuseSelect" type="Control"]
++layout_mode = 3
++anchors_preset = 15
++anchor_right = 1.0
++anchor_bottom = 1.0
++grow_horizontal = 2
++grow_vertical = 2
++mouse_filter = 2
++script = ExtResource("1")
++
++[node name="Background" type="TextureRect" parent="."]
++layout_mode = 1
++anchors_preset = 15
++anchor_right = 1.0
++anchor_bottom = 1.0
++grow_horizontal = 2
++grow_vertical = 2
++mouse_filter = 2
++modulate = Color(0.78, 0.7, 0.75, 1)
++texture = ExtResource("2")
++expand_mode = 1
++stretch_mode = 6
++
++[node name="Tint" type="ColorRect" parent="."]
++layout_mode = 1
++anchors_preset = 15
++anchor_right = 1.0
++anchor_bottom = 1.0
++grow_horizontal = 2
++grow_vertical = 2
++mouse_filter = 2
++color = Color(0.35, 0.0, 0.05, 0.18)
++
++[node name="Dim" type="ColorRect" parent="."]
++unique_name_in_owner = true
++layout_mode = 1
++anchors_preset = 15
++anchor_right = 1.0
++anchor_bottom = 1.0
++grow_horizontal = 2
++grow_vertical = 2
++mouse_filter = 2
++color = Color(0, 0, 0, 0)
++
++[node name="Girls" type="Node2D" parent="."]
++unique_name_in_owner = true
++position = Vector2(0, -3.07)
++scale = Vector2(0.64257, 0.64257)
++
++[node name="nvision_swe" type="Polygon2D" parent="Girls"]
++visible = false
++texture = ExtResource("2")
++polygon = PackedVector2Array(280, 116, 262, 120, 243, 120, 229, 125, 169, 166, 138, 197, 119, 229, 84, 267, 72, 289, 70, 315, 64, 328, 64, 350, 58, 371, 42, 393, 36, 407, 35, 444, 12, 480, 0, 484, 0, 847, 20, 847, 52, 856, 57, 863, 62, 888, 71, 902, 75, 915, 86, 923, 110, 924, 123, 938, 130, 991, 130, 1007, 126, 1018, 130, 1044, 124, 1061, 123, 1076, 102, 1102, 98, 1129, 429, 1129, 425, 1033, 429, 881, 449, 759, 439, 727, 430, 612, 431, 493, 425, 457, 428, 303, 411, 290, 407, 272, 387, 240, 349, 159, 334, 146, 304, 141, 294, 126)
++
++[node name="amd_employee" type="Polygon2D" parent="Girls"]
++visible = false
++texture = ExtResource("2")
++polygon = PackedVector2Array(700, 130, 668, 132, 632, 146, 619, 146, 589, 154, 559, 167, 492, 227, 449, 295, 434, 298, 429, 303, 426, 457, 432, 493, 431, 612, 440, 727, 450, 758, 430, 881, 426, 985, 430, 1129, 830, 1129, 834, 1026, 830, 903, 790, 831, 765, 723, 785, 540, 789, 473, 795, 458, 789, 439, 779, 423, 779, 415, 789, 396, 795, 375, 793, 329, 769, 275, 762, 234, 748, 190, 720, 164, 719, 148, 715, 139)
++
++[node name="childhood_sweetheart" type="Polygon2D" parent="Girls"]
++visible = false
++texture = ExtResource("2")
++polygon = PackedVector2Array(992, 180, 969, 187, 941, 202, 910, 233, 895, 257, 874, 279, 872, 331, 856, 360, 847, 431, 821, 462, 797, 462, 790, 473, 786, 540, 766, 723, 791, 831, 831, 903, 835, 980, 831, 1129, 1185, 1129, 1189, 951, 1199, 815, 1195, 591, 1204, 493, 1194, 429, 1184, 297, 1179, 286, 1162, 284, 1156, 280, 1150, 264, 1129, 245, 1120, 224, 1110, 213, 1097, 210, 1060, 187, 1037, 180)
++
++[node name="startup_ceo" type="Polygon2D" parent="Girls"]
++visible = false
++texture = ExtResource("2")
++polygon = PackedVector2Array(1291, 130, 1282, 143, 1248, 154, 1223, 167, 1222, 178, 1212, 201, 1211, 218, 1188, 248, 1181, 281, 1186, 302, 1195, 429, 1205, 493, 1196, 591, 1200, 815, 1190, 951, 1186, 1129, 1640, 1129, 1640, 1001, 1597, 798, 1595, 702, 1536, 526, 1538, 491, 1523, 469, 1523, 370, 1533, 338, 1527, 307, 1511, 270, 1506, 248, 1492, 229, 1489, 219, 1482, 213, 1471, 212, 1466, 208, 1465, 190, 1458, 180, 1363, 166, 1335, 143, 1314, 146, 1301, 132)
++
++[node name="shareholder" type="Polygon2D" parent="Girls"]
++visible = false
++texture = ExtResource("2")
++polygon = PackedVector2Array(1759, 140, 1715, 153, 1675, 174, 1653, 191, 1640, 205, 1602, 265, 1581, 309, 1580, 347, 1590, 375, 1590, 400, 1593, 408, 1609, 423, 1632, 426, 1643, 439, 1658, 442, 1662, 447, 1660, 462, 1647, 475, 1608, 486, 1604, 497, 1599, 500, 1581, 502, 1560, 514, 1542, 516, 1537, 522, 1556, 587, 1596, 702, 1598, 798, 1641, 1001, 1641, 1129, 1991, 1129, 1991, 738, 1971, 738, 1965, 732, 1969, 700, 1969, 665, 1953, 630, 1951, 569, 1941, 535, 1933, 526, 1910, 519, 1873, 475, 1873, 436, 1890, 406, 1891, 380, 1905, 352, 1903, 334, 1895, 308, 1895, 291, 1878, 256, 1864, 201, 1847, 176, 1842, 172, 1828, 172, 1822, 169, 1814, 151, 1804, 139)
++
++[node name="Header" type="PanelContainer" parent="."]
++layout_mode = 0
++offset_left = 290.0
++offset_top = 12.0
++offset_right = 990.0
++offset_bottom = 74.0
++mouse_filter = 2
++theme_override_styles/panel = SubResource("Bar")
++
++[node name="HeaderBox" type="VBoxContainer" parent="Header"]
++layout_mode = 2
++theme_override_constants/separation = 0
++
++[node name="Title" type="Label" parent="Header/HeaderBox"]
++layout_mode = 2
++theme_override_colors/font_color = Color(1, 0.45, 0.45, 1)
++theme_override_font_sizes/font_size = 28
++text = "Who is leaking NVision's secrets?"
++horizontal_alignment = 1
++
++[node name="Sub" type="Label" parent="Header/HeaderBox"]
++unique_name_in_owner = true
++modulate = Color(1, 1, 1, 0.75)
++layout_mode = 2
++text = "Day 2  -  Accuse one of them"
++horizontal_alignment = 1
++
++[node name="InfoBar" type="PanelContainer" parent="."]
++layout_mode = 0
++offset_left = 140.0
++offset_top = 636.0
++offset_right = 1140.0
++offset_bottom = 708.0
++mouse_filter = 2
++theme_override_styles/panel = SubResource("Bar")
++
++[node name="InfoBox" type="VBoxContainer" parent="InfoBar"]
++layout_mode = 2
++theme_override_constants/separation = 0
++
++[node name="InfoName" type="Label" parent="InfoBar/InfoBox"]
++unique_name_in_owner = true
++layout_mode = 2
++theme_override_colors/font_color = Color(1, 0.55, 0.45, 1)
++theme_override_font_sizes/font_size = 26
++text = "Hover over a suspect"
++horizontal_alignment = 1
++
++[node name="InfoDetail" type="Label" parent="InfoBar/InfoBox"]
++unique_name_in_owner = true
++modulate = Color(1, 1, 1, 0.8)
++layout_mode = 2
++text = "Click the woman you believe is the leaker"
++horizontal_alignment = 1
++
++[node name="Debug" type="VBoxContainer" parent="."]
++unique_name_in_owner = true
++layout_mode = 0
++offset_left = 1000.0
++offset_top = 16.0
++offset_right = 1264.0
++offset_bottom = 60.0
++mouse_filter = 2
++
++[node name="DebugLabel" type="Label" parent="Debug"]
++unique_name_in_owner = true
++layout_mode = 2
++theme_override_colors/font_color = Color(1, 0.6, 0.3, 1)
++autowrap_mode = 3
++
++[node name="Modal" type="Control" parent="."]
++unique_name_in_owner = true
++visible = false
++layout_mode = 1
++anchors_preset = 15
++anchor_right = 1.0
++anchor_bottom = 1.0
++grow_horizontal = 2
++grow_vertical = 2
++
++[node name="Veil" type="ColorRect" parent="Modal"]
++layout_mode = 1
++anchors_preset = 15
++anchor_right = 1.0
++anchor_bottom = 1.0
++grow_horizontal = 2
++grow_vertical = 2
++color = Color(0, 0, 0, 0.66)
++
++[node name="Panel" type="PanelContainer" parent="Modal"]
++unique_name_in_owner = true
++layout_mode = 1
++anchors_preset = 8
++anchor_left = 0.5
++anchor_top = 0.5
++anchor_right = 0.5
++anchor_bottom = 0.5
++offset_left = -390.0
++offset_top = -230.0
++offset_right = 390.0
++offset_bottom = 230.0
++grow_horizontal = 2
++grow_vertical = 2
++theme_override_styles/panel = SubResource("Popup")
++
++[node name="Row" type="HBoxContainer" parent="Modal/Panel"]
++layout_mode = 2
++theme_override_constants/separation = 24
++
++[node name="PortraitFrame" type="PanelContainer" parent="Modal/Panel/Row"]
++custom_minimum_size = Vector2(260, 0)
++layout_mode = 2
++theme_override_styles/panel = SubResource("PortraitFrame")
++
++[node name="Portrait" type="TextureRect" parent="Modal/Panel/Row/PortraitFrame"]
++unique_name_in_owner = true
++layout_mode = 2
++expand_mode = 1
++stretch_mode = 6
++
++[node name="Text" type="VBoxContainer" parent="Modal/Panel/Row"]
++layout_mode = 2
++size_flags_horizontal = 3
++theme_override_constants/separation = 14
++
++[node name="PopupTitle" type="Label" parent="Modal/Panel/Row/Text"]
++unique_name_in_owner = true
++layout_mode = 2
++theme_override_colors/font_color = Color(1, 0.5, 0.45, 1)
++theme_override_font_sizes/font_size = 30
++text = "Accuse her?"
++autowrap_mode = 3
++
++[node name="PopupBody" type="RichTextLabel" parent="Modal/Panel/Row/Text"]
++unique_name_in_owner = true
++layout_mode = 2
++size_flags_vertical = 3
++theme_override_font_sizes/normal_font_size = 19
++theme_override_font_sizes/italics_font_size = 19
++theme_override_font_sizes/bold_font_size = 19
++bbcode_enabled = true
++text = ""
++scroll_active = false
++
++[node name="Buttons" type="HBoxContainer" parent="Modal/Panel/Row/Text"]
++layout_mode = 2
++theme_override_constants/separation = 14
++alignment = 2
++
++[node name="CancelButton" type="Button" parent="Modal/Panel/Row/Text/Buttons"]
++unique_name_in_owner = true
++custom_minimum_size = Vector2(150, 46)
++layout_mode = 2
++text = "Not yet"
++
++[node name="ConfirmButton" type="Button" parent="Modal/Panel/Row/Text/Buttons"]
++unique_name_in_owner = true
++custom_minimum_size = Vector2(190, 46)
++layout_mode = 2
++theme_override_colors/font_color = Color(1, 1, 1, 1)
++theme_override_styles/normal = SubResource("Danger")
++theme_override_styles/hover = SubResource("Danger")
++theme_override_styles/pressed = SubResource("Danger")
++text = "Accuse her"
+diff --git a/secret-scandal-handling-ssh/scripts/accuse_select.gd b/secret-scandal-handling-ssh/scripts/accuse_select.gd
+new file mode 100644
+index 0000000..e6d69ad
+--- /dev/null
++++ b/secret-scandal-handling-ssh/scripts/accuse_select.gd
+@@ -0,0 +1,543 @@
++extends Control
++
++## End-of-day accusation (days 2-5). Same layout as the date picker: the five
++## outlines are Polygon2D shapes under "Girls". Hovering highlights one woman,
++## clicking opens a confirmation popup, and confirming accuses her via
++## GameState.accuse().
++##
++## Correct: the leak is stopped and the game ends (earlier = better ending).
++## Wrong: she breaks up with Johnson, the affair goes public, and she can't be
++## dated or accused again. On the last day a wrong guess is the final failure.
++
++const GLOW_COLOR := Color(1.0, 0.18, 0.22)
++const CORE_COLOR := Color(1.0, 0.86, 0.82)
++
++const GLOW_LAYERS := [
++	[64.0, 0.07],
++	[40.0, 0.12],
++	[24.0, 0.20],
++	[12.0, 0.38]
++]
++
++const CORE_WIDTH := 4.0
++const DIM_AMOUNT := 0.6
++
++## Dark wash drawn over women who were already (wrongly) accused.
++const ACCUSED_SHADE := Color(0.03, 0.0, 0.02, 0.72)
++const ACCUSED_LABEL_SIZE := 44
++
++## What she says when Johnson accuses her and she is innocent. She breaks up with him.
++const INNOCENT_REACTIONS := {
++	"nvision_swe": "Me? Leak NVision? I... I would never. I can't believe you'd even think that. We're done, Johnson. Please don't come by my desk anymore.",
++	"amd_employee": "You think I'm some DMA spy? Wow. After everything... It's not like I was hiding anything that would hurt YOU. We're finished. Go interrogate someone else.",
++	"childhood_sweetheart": "Johnson... we've known each other since we were kids. And you really think I'd do that to you? I need you to leave. Please.",
++	"startup_ceo": "Unbelievable. You've always doubted me, and now this. Don't call me. Don't text me. Whatever this was, it's over.",
++	"shareholder": "How very bold of you, darling. And how very wrong. Consider our little arrangement over, and don't expect my vote at the next board meeting.",
++}
++
++## What she says when Johnson catches her. Her mask slips.
++const GUILTY_REACTIONS := {
++	"nvision_swe": "...Fine. Yes, it was me. Do you know how many weekends I've given this company? Somebody had to make you pay for it.",
++	"amd_employee": "So you finally figured it out. Took you long enough. DMA sends its regards, Johnson.",
++	"childhood_sweetheart": "You never once took me seriously. My company was going to be the one thing you couldn't ignore.",
++	"startup_ceo": "Took you long enough. Maybe if you'd ever actually let me in, I wouldn't have wanted to burn it all down.",
++	"shareholder": "Oh, darling. Did you really think I didn't know about the others? Consider it my parting gift.",
++}
++
++@onready var _girls: Node2D = %Girls
++@onready var _dim: ColorRect = %Dim
++@onready var _info_name: Label = %InfoName
++@onready var _info_detail: Label = %InfoDetail
++@onready var _debug_box: Control = %Debug
++@onready var _debug_label: Label = %DebugLabel
++
++@onready var _modal: Control = %Modal
++@onready var _popup_portrait: TextureRect = %Portrait
++@onready var _popup_title: Label = %PopupTitle
++@onready var _popup_body: RichTextLabel = %PopupBody
++@onready var _cancel_button: Button = %CancelButton
++@onready var _confirm_button: Button = %ConfirmButton
++
++var _ids: Array = []
++var _glow: Dictionary = {}
++
++var _hover := ""
++
++## "" = picking, "confirm" = asking "are you sure?", "result" = showing what happened.
++var _modal_state := ""
++var _pending := ""
++var _was_correct := false
++
++var _pulse: Tween
++var _dim_tween: Tween
++
++
++func _ready() -> void:
++	# Arrived here with nothing to do (e.g. today's accusation already made): keep the story moving.
++	if not GameState.accusation_due():
++		GameState.go_next.call_deferred()
++		return
++
++	if GameState.day >= GameState.LAST_DAY:
++		%Sub.text = "Day %d  -  Final chance: accuse one of them" % GameState.day
++	else:
++		%Sub.text = "Day %d  -  Accuse one of them before the day ends" % GameState.day
++
++	var additive := CanvasItemMaterial.new()
++	additive.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
++
++	for g in _girls.get_children():
++		var id := String(g.name)
++
++		if not GameState.characters.has(id):
++			continue
++
++		_ids.append(id)
++
++		var poly := g as Polygon2D
++
++		if poly == null:
++			continue
++
++		poly.uv = poly.polygon
++		poly.color = Color(1.12, 1.08, 1.12)
++
++		var holder := Node2D.new()
++		holder.visible = false
++
++		poly.add_child(holder)
++
++		for layer in GLOW_LAYERS:
++			holder.add_child(
++				_make_line(
++					poly.polygon,
++					float(layer[0]),
++					Color(
++						GLOW_COLOR,
++						float(layer[1])
++					),
++					additive
++				)
++			)
++
++		holder.add_child(
++			_make_line(
++				poly.polygon,
++				CORE_WIDTH,
++				Color(CORE_COLOR, 0.95),
++				additive
++			)
++		)
++
++		_glow[id] = holder
++
++	# Shade women who are already ruled out. Added after the outlines so it
++	# always draws on top, even while she is hovered.
++	for id in _ids:
++		if not GameState.can_accuse(id):
++			_add_accused_mark(
++				_girls.get_node(NodePath(id)) as Polygon2D
++			)
++
++	_cancel_button.pressed.connect(_on_cancel)
++	_confirm_button.pressed.connect(_on_confirm)
++
++	_update_debug()
++
++
++func _make_line(
++	points: PackedVector2Array,
++	width: float,
++	color: Color,
++	mat: Material
++) -> Line2D:
++
++	var line := Line2D.new()
++
++	line.points = points
++	line.closed = true
++	line.width = width
++	line.default_color = color
++	line.joint_mode = Line2D.LINE_JOINT_ROUND
++	line.antialiased = true
++	line.material = mat
++
++	return line
++
++
++func _add_accused_mark(poly: Polygon2D) -> void:
++	if poly == null:
++		return
++
++	var shade := Polygon2D.new()
++	shade.polygon = poly.polygon
++	shade.color = ACCUSED_SHADE
++	_girls.add_child(shade)
++
++	var box := Rect2(poly.polygon[0], Vector2.ZERO)
++	for p in poly.polygon:
++		box = box.expand(p)
++
++	var label := Label.new()
++	label.text = "ACCUSED"
++	label.add_theme_font_size_override("font_size", ACCUSED_LABEL_SIZE)
++	label.add_theme_color_override("font_color", Color(1, 0.4, 0.4, 0.9))
++	label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
++	label.add_theme_constant_override("outline_size", 10)
++	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
++	label.size = Vector2(box.size.x, 60)
++	label.position = Vector2(box.position.x, box.get_center().y - 30)
++	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
++	shade.add_child(label)
++
++
++func _id_at(screen_pos: Vector2) -> String:
++	var local_pos := _girls.to_local(screen_pos)
++
++	for id in _ids:
++		var poly := (
++			_girls.get_node(NodePath(id))
++			as Polygon2D
++		)
++
++		if poly == null:
++			continue
++
++		if Geometry2D.is_point_in_polygon(
++			local_pos,
++			poly.polygon
++		):
++			return id
++
++	return ""
++
++
++func _set_hover(id: String) -> void:
++	if id == _hover:
++		return
++
++	_hover = id
++
++	for k in _ids:
++		var selected: bool = (k == id)
++
++		var girl := _girls.get_node(
++			NodePath(k)
++		)
++
++		girl.visible = selected
++
++		if _glow.has(k):
++			# No glow on someone he can't accuse.
++			_glow[k].visible = selected and GameState.can_accuse(k)
++
++	if _pulse:
++		_pulse.kill()
++		_pulse = null
++
++	if _dim_tween:
++		_dim_tween.kill()
++		_dim_tween = null
++
++	_dim_tween = create_tween()
++
++	_dim_tween.tween_property(
++		_dim,
++		"color:a",
++		DIM_AMOUNT if id != "" else 0.0,
++		0.15
++	)
++
++	if id == "":
++		_info_name.text = "Hover over a suspect"
++		_info_detail.text = "Click the woman you believe is the leaker"
++
++		Input.set_default_cursor_shape(
++			Input.CURSOR_ARROW
++		)
++
++		return
++
++	var character: Dictionary = (
++		GameState.characters[id]
++	)
++
++	_info_name.text = character["name"]
++
++	if not GameState.can_accuse(id):
++		_info_detail.text = (
++			"You already accused %s, and she was innocent."
++			% character["name"]
++		)
++
++		Input.set_default_cursor_shape(
++			Input.CURSOR_FORBIDDEN
++		)
++
++		return
++
++	Input.set_default_cursor_shape(
++		Input.CURSOR_POINTING_HAND
++	)
++
++	var status := "Trustmeter: %s" % GameState.trust_label(id)
++
++	if GameState.dumped[id]:
++		status = "She already left you"
++
++	_info_detail.text = (
++		"%s   -   %s   -   Click to accuse"
++		% [
++			character["role"],
++			status
++		]
++	)
++
++	var glow_node: Node2D = _glow[id]
++
++	glow_node.modulate.a = 1.0
++
++	_pulse = (
++		create_tween()
++		.set_loops()
++		.set_trans(Tween.TRANS_SINE)
++		.set_ease(Tween.EASE_IN_OUT)
++	)
++
++	_pulse.tween_property(
++		glow_node,
++		"modulate:a",
++		0.6,
++		0.7
++	)
++
++	_pulse.tween_property(
++		glow_node,
++		"modulate:a",
++		1.0,
++		0.7
++	)
++
++
++func _update_debug() -> void:
++	_debug_label.text = (
++		"DEBUG (F1 hides): spy is %s"
++		% GameState.characters[
++			GameState.spy_id
++		]["name"]
++	)
++
++
++func _input(event: InputEvent) -> void:
++	# While the popup is open, only its buttons (and Esc to back out) work.
++	if _modal_state != "":
++		if (
++			event is InputEventKey
++			and event.pressed
++			and event.keycode == KEY_ESCAPE
++			and _modal_state == "confirm"
++		):
++			_on_cancel()
++			get_viewport().set_input_as_handled()
++		return
++
++	if event is InputEventMouseMotion:
++		_set_hover(
++			_id_at(event.position)
++		)
++
++	elif event is InputEventKey and event.pressed:
++		if event.keycode == KEY_F1:
++			_debug_box.visible = (
++				not _debug_box.visible
++			)
++
++		elif (
++			event.keycode == KEY_LEFT
++			or event.keycode == KEY_RIGHT
++		):
++			if _ids.is_empty():
++				return
++
++			var index := _ids.find(_hover)
++
++			index = (
++				0
++				if index < 0
++				else posmod(
++					index + (
++						1
++						if event.keycode == KEY_RIGHT
++						else -1
++					),
++					_ids.size()
++				)
++			)
++
++			_set_hover(
++				_ids[index]
++			)
++
++		elif (
++			event.keycode == KEY_ENTER
++			or event.keycode == KEY_KP_ENTER
++		) and _hover != "":
++			get_viewport().set_input_as_handled()
++			_on_pick(_hover)
++
++
++func _unhandled_input(event: InputEvent) -> void:
++	if _modal_state != "":
++		return
++
++	if (
++		event is InputEventMouseButton
++		and event.pressed
++		and event.button_index == MOUSE_BUTTON_LEFT
++		and _hover != ""
++	):
++		_on_pick(_hover)
++
++
++# --------------------------------------------------
++# POPUP
++# --------------------------------------------------
++
++func _on_pick(id: String) -> void:
++	if not GameState.can_accuse(id):
++		return
++
++	_pending = id
++
++	var her_name: String = GameState.characters[id]["name"]
++
++	_set_popup_portrait(id, "surprised")
++
++	_popup_title.text = "Accuse %s?" % her_name
++
++	var body := (
++		"You're about to accuse [b]%s[/b] of leaking NVision's secrets.\n\n"
++		% her_name
++	)
++
++	body += (
++		"[color=#ff7a7a][b]Warning:[/b] if %s is not the leaker, she will break up "
++		+ "with you on the spot, your secret relationship with her will go public, "
++		+ "and you will never be able to see her again.[/color]"
++	) % her_name
++
++	if GameState.day >= GameState.LAST_DAY:
++		body += (
++			"\n\n[color=#ffb070]This is your last chance. If you're wrong, "
++			+ "the real leaker gets away.[/color]"
++		)
++
++	_popup_body.text = body
++
++	_cancel_button.visible = true
++	_cancel_button.text = "Not yet"
++	_confirm_button.text = "Accuse %s" % her_name
++
++	_open_modal("confirm")
++
++	_cancel_button.grab_focus()
++
++
++func _on_cancel() -> void:
++	if _modal_state != "confirm":
++		return
++
++	_pending = ""
++	_close_modal()
++
++
++func _on_confirm() -> void:
++	match _modal_state:
++		"confirm":
++			_resolve_accusation()
++		"result":
++			_continue()
++
++
++func _resolve_accusation() -> void:
++	var id := _pending
++	var her_name: String = GameState.characters[id]["name"]
++
++	_was_correct = GameState.accuse(id)
++
++	var body := ""
++
++	if _was_correct:
++		_set_popup_portrait(id, "serious")
++		_popup_title.text = "%s was the leaker" % her_name
++		body = "\"%s\"\n\n" % GUILTY_REACTIONS.get(id, "...So you figured it out.")
++		body += (
++			"[color=#8fe3a0]NVision security locks down the leak before it spreads. "
++			+ "The company's secrets are safe.[/color]"
++		)
++		_confirm_button.text = "See the headlines"
++
++	else:
++		_set_popup_portrait(id, "serious")
++		_popup_title.text = "%s wasn't the leaker" % her_name
++		body = "\"%s\"\n\n" % INNOCENT_REACTIONS.get(id, "How could you? We're done.")
++		body += (
++			"[color=#ff7a7a]%s has broken up with you, and by morning the story is everywhere: "
++			+ "%s[/color]\n\n"
++		) % [her_name, GameState.accusation_scandal(id)]
++
++		if GameState.case_state == "failed":
++			body += "[color=#ffb070]Out of time, the real leaker is still out there...[/color]"
++			_confirm_button.text = "See the headlines"
++		else:
++			body += "The real leaker is still out there."
++			_confirm_button.text = "End the day"
++
++	_popup_body.text = body
++
++	_cancel_button.visible = false
++
++	_open_modal("result")
++
++	_confirm_button.grab_focus()
++
++
++func _continue() -> void:
++	Input.set_default_cursor_shape(
++		Input.CURSOR_ARROW
++	)
++
++	# Solved / final failure -> ending screen, otherwise the next day starts.
++	GameState.go_next()
++
++
++func _open_modal(state: String) -> void:
++	_modal_state = state
++	_modal.visible = true
++
++	Input.set_default_cursor_shape(
++		Input.CURSOR_ARROW
++	)
++
++
++func _close_modal() -> void:
++	_modal_state = ""
++	_modal.visible = false
++
++	# Re-run hover so the info bar and cursor match where the mouse is now.
++	var id := _hover
++	_hover = "__refresh__"
++	_set_hover(
++		_id_at(get_viewport().get_mouse_position())
++		if id == ""
++		else id
++	)
++
++
++func _set_popup_portrait(id: String, emotion: String) -> void:
++	var path := GameState.portrait_path(id, emotion)
++
++	if ResourceLoader.exists(path):
++		_popup_portrait.texture = load(path)
++	else:
++		_popup_portrait.texture = null
+diff --git a/secret-scandal-handling-ssh/scripts/accuse_select.gd.uid b/secret-scandal-handling-ssh/scripts/accuse_select.gd.uid
+new file mode 100644
+index 0000000..eb4633e
+--- /dev/null
++++ b/secret-scandal-handling-ssh/scripts/accuse_select.gd.uid
+@@ -0,0 +1 @@
++uid://wxgavxgnxjlj
+diff --git a/secret-scandal-handling-ssh/scripts/date_scene.gd b/secret-scandal-handling-ssh/scripts/date_scene.gd
+index 3194e1a..e75e9ae 100644
+--- a/secret-scandal-handling-ssh/scripts/date_scene.gd
++++ b/secret-scandal-handling-ssh/scripts/date_scene.gd
+@@ -74,6 +74,13 @@ func _ready() -> void:
+ 			randi() % keys.size()
+ 		]
+ 
++	# A woman Johnson wrongly accused of leaking will never date him again.
++	if GameState.is_accused(char_id):
++		get_tree().change_scene_to_file.call_deferred(
++			GameState.DATE_SELECT_SCENE
++		)
++		return
++
+ 	# --------------------------------------------------
+ 	# Background
+ 	# --------------------------------------------------
+diff --git a/secret-scandal-handling-ssh/scripts/date_select.gd b/secret-scandal-handling-ssh/scripts/date_select.gd
+index c57b97e..de9362c 100644
+--- a/secret-scandal-handling-ssh/scripts/date_select.gd
++++ b/secret-scandal-handling-ssh/scripts/date_select.gd
+@@ -39,6 +39,11 @@ func _ready() -> void:
+ 		)
+ 		return
+ 
++	# Everyone left today is either dumped or wrongly accused: move on (accusation / next day).
++	if GameState.day_finished():
++		GameState.go_next.call_deferred()
++		return
++
+ 	%Sub.text = "Day %d  -  %d dates left" % [
+ 		GameState.day,
+ 		GameState.dates_left
+@@ -230,7 +235,13 @@ func _set_hover(id: String) -> void:
+ 		.trim_suffix(" Workspace")
+ 	)
+ 
+-	if GameState.dumped[id]:
++	if GameState.is_accused(id):
++		_info_detail.text = (
++			"You accused %s of leaking. She's done with you."
++			% character["name"]
++		)
++
++	elif GameState.dumped[id]:
+ 		_info_detail.text = (
+ 			"%s ended things with you."
+ 			% character["name"]
+@@ -346,7 +357,7 @@ func _unhandled_input(event: InputEvent) -> void:
+ 
+ 
+ func _on_pick(id: String) -> void:
+-	if GameState.dumped[id]:
++	if not GameState.can_date(id):
+ 		return
+ 
+ 	if GameState.has_dated_today(id):
+diff --git a/secret-scandal-handling-ssh/scripts/ending.gd b/secret-scandal-handling-ssh/scripts/ending.gd
+index 6c58b34..de623d4 100644
+--- a/secret-scandal-handling-ssh/scripts/ending.gd
++++ b/secret-scandal-handling-ssh/scripts/ending.gd
+@@ -9,16 +9,25 @@ const OUTCOME_TITLES := {
+ 	"alone": "ALONE",
+ }
+ 
++## The leak investigation outcome takes priority over the trustmeter title.
++const CASE_TITLES := {
++	"solved": "LEAK STOPPED",
++	"failed": "FIRED",
++}
++
+ 
+ func _ready() -> void:
+ 	var r: Dictionary = GameState.ending_report()
+-	%Title.text = OUTCOME_TITLES.get(r["outcome"], "The end")
++	%Title.text = CASE_TITLES.get(r["case_state"], OUTCOME_TITLES.get(r["outcome"], "The end"))
+ 	%Rating.text = "Trustmeter: %+d  -  %s" % [r["trustmeter"], r["rating"]]
+ 	var text := ""
++	if r["case_summary"] != "":
++		var color := "#8fe3a0" if r["case_state"] == "solved" else "#ff7a7a"
++		text += "[center][color=%s]%s[/color][/center]\n\n" % [color, r["case_summary"]]
+ 	if r["punishment"] != "":
+-		text = "[center]%s[/center]" % r["punishment"]
++		text += "[center]%s[/center]" % r["punishment"]
+ 	else:
+-		text = "[center]You were kind to the people who trusted you, and it shows.[/center]"
++		text += "[center]You were kind to the people who trusted you, and it shows.[/center]"
+ 	text += "\n\n[center][color=#9a8aa8]Replies picked: %d warm, %d neutral, %d probing, %d rude, %d cruel[/color][/center]" % [
+ 		r["tone_counts"]["warm"], r["tone_counts"]["neutral"], r["tone_counts"]["probing"], r["tone_counts"]["rude"], r["tone_counts"]["cruel"]]
+ 	%Punishment.text = text
+@@ -38,7 +47,12 @@ func _ready() -> void:
+ 		bar.modulate = Color.from_hsv(clampf(GameState.trust[id] / 100.0, 0.0, 1.0) * 0.33, 0.65, 1.0)
+ 		row.add_child(bar)
+ 		var state := Label.new()
+-		state.text = "Left you" if GameState.dumped[id] else GameState.trust_label(id)
++		if GameState.is_accused(id):
++			state.text = "Wrongly accused"
++		elif GameState.dumped[id]:
++			state.text = "Left you"
++		else:
++			state.text = GameState.trust_label(id)
+ 		row.add_child(state)
+ 		%TrustList.add_child(row)
+ 	%NewRunButton.pressed.connect(func():
+diff --git a/secret-scandal-handling-ssh/scripts/game_state.gd b/secret-scandal-handling-ssh/scripts/game_state.gd
+index 64d2475..6e87580 100644
+--- a/secret-scandal-handling-ssh/scripts/game_state.gd
++++ b/secret-scandal-handling-ssh/scripts/game_state.gd
+@@ -6,7 +6,9 @@ const MINIGAME_TASKS_PATH := "res://data/minigame_tasks.json"
+ const DATE_SELECT_SCENE := "res://scenes/date_select.tscn"
+ const MINIGAME_SCENE := "res://scenes/prompt_minigame.tscn"
+ const ENDING_SCENE := "res://scenes/ending.tscn"
++const ACCUSE_SCENE := "res://scenes/accuse_select.tscn"
+ const LAST_DAY := 5
++const FIRST_ACCUSATION_DAY := 2     # no accusation on day 1; from day 2 on, every day ends with one
+ 
+ var emotions: Array = []
+ var characters: Dictionary = {}
+@@ -33,6 +35,21 @@ var rude_streak: Dictionary = {}    # character_id -> how many rude/cruel replie
+ var trustmeter: int = 0             # overall signed score: kind replies add, mean replies subtract. Revealed at the end.
+ var tone_counts: Dictionary = {}    # tone -> times picked
+ 
++# ---- Accusations. From day 2 on, every day ends with Johnson accusing one woman of being the leaker. ----
++## What goes public when Johnson wrongly accuses each woman. She is still innocent of the leaks.
++const ACCUSATION_SCANDALS := {
++	"nvision_swe": "NVision CEO's secret romance with one of his own engineers raises workplace-ethics questions.",
++	"amd_employee": "NVision CEO secretly involved with a woman tied to rival DMA, sparking corporate-security concerns.",
++	"childhood_sweetheart": "NVision CEO's years-long secret relationship with his childhood friend comes to light.",
++	"startup_ceo": "NVision CEO's hidden relationship with a rival startup founder raises conflict-of-interest concerns.",
++	"shareholder": "NVision CEO secretly dating a member of his own Board, prompting a governance and board-independence crisis.",
++}
++var accused: Dictionary = {}        # character_id -> day she was WRONGLY accused. She has broken up with him for good.
++var wrong_accusations: Array = []   # [{id, day}] in the order they happened (for news/ending screens)
++var accused_today := false          # has today's accusation already been made?
++var case_state := "open"            # open | solved (caught the leaker) | failed (final day ended without catching her)
++var solved_day := 0                 # the day the leaker was caught (earlier = better ending), 0 if never
++
+ 
+ func _ready() -> void:
+ 	_load_characters()
+@@ -71,6 +88,11 @@ func new_run() -> void:
+ 		trust[id] = START_TRUST
+ 		dumped[id] = false
+ 		rude_streak[id] = 0
++	accused.clear()
++	wrong_accusations.clear()
++	accused_today = false
++	case_state = "open"
++	solved_day = 0
+ 	trustmeter = 0
+ 	tone_counts = {"warm": 0, "neutral": 0, "probing": 0, "rude": 0, "cruel": 0}
+ 	_recount_dates()
+@@ -83,7 +105,7 @@ func new_run() -> void:
+ func _recount_dates() -> void:
+ 	dates_left = 0
+ 	for id in characters:
+-		if not dated_today.has(id) and not dumped.get(id, false):
++		if not dated_today.has(id) and can_date(id):
+ 			dates_left += 1
+ 
+ 
+@@ -97,6 +119,16 @@ func has_dated_today(id: String) -> bool:
+ 	return dated_today.has(id)
+ 
+ 
++## She can still go on dates: she hasn't dumped him and he hasn't wrongly accused her.
++func can_date(id: String) -> bool:
++	return not dumped.get(id, false) and not is_accused(id)
++
++
++## True once Johnson has wrongly accused her of being the leaker. She won't go on dates with him again.
++func is_accused(id: String) -> bool:
++	return accused.has(id)
++
++
+ func day_finished() -> bool:
+ 	_recount_dates()   # someone may have just dumped him
+ 	return dates_left <= 0
+@@ -106,6 +138,7 @@ func end_day() -> void:
+ 	day += 1
+ 	dated_today.clear()
+ 	minigame_done_today = false
++	accused_today = false
+ 	_recount_dates()
+ 
+ 
+@@ -119,7 +152,9 @@ func go_next() -> void:
+ 	if not minigame_done_today and (timing == "before_dates" or (timing == "after_dates" and day_finished())):
+ 		get_tree().change_scene_to_file(MINIGAME_SCENE)
+ 	elif day_finished():
+-		if day >= LAST_DAY:
++		if accusation_due():
++			get_tree().change_scene_to_file(ACCUSE_SCENE)
++		elif case_state != "open" or day >= LAST_DAY:
+ 			get_tree().change_scene_to_file(ENDING_SCENE)
+ 		else:
+ 			end_day()
+@@ -137,9 +172,35 @@ func active_secret(id: String) -> String:
+ 	return c["malicious_secret"] if is_spy(id) else c["innocent_secret"]
+ 
+ 
+-## Returns the "guess who the leaker is" result.
++## The day's dates (and work) are done and Johnson still has to name today's suspect.
++func accusation_due() -> bool:
++	return case_state == "open" and day >= FIRST_ACCUSATION_DAY and not accused_today
++
++
++## Women Johnson can still accuse. Anyone he has already wrongly accused is ruled out.
++## (A woman who dumped him can still be accused: she might be the leaker.)
++func can_accuse(id: String) -> bool:
++	return characters.has(id) and not is_accused(id)
++
++
++## Johnson accuses her of being the leaker. Returns true if he caught the real leaker.
++## A wrong accusation ends that relationship for good and makes it public.
+ func accuse(id: String) -> bool:
+-	return is_spy(id)
++	accused_today = true
++	if is_spy(id):
++		case_state = "solved"
++		solved_day = day
++		return true
++	accused[id] = day
++	wrong_accusations.append({"id": id, "day": day})
++	if day >= LAST_DAY:
++		case_state = "failed"
++	_recount_dates()
++	return false
++
++
++func accusation_scandal(id: String) -> String:
++	return ACCUSATION_SCANDALS.get(id, "NVision CEO's secret relationship goes public.")
+ 
+ 
+ func portrait_path(id: String, emotion: String) -> String:
+@@ -242,4 +303,27 @@ func ending_report() -> Dictionary:
+ 		outcome = "reputation"
+ 		punishment = "Whispers start in the Invision hallways. Nobody says it to your face, but people stop returning your calls as quickly. Trust is slower to win back than it was to lose."
+ 	return {"trustmeter": trustmeter, "rating": rating, "outcome": outcome, "punishment": punishment,
+-		"dumped": gone, "tone_counts": tone_counts.duplicate()}
++		"dumped": gone, "tone_counts": tone_counts.duplicate(),
++		"case_state": case_state, "solved_day": solved_day, "case_summary": case_summary(),
++		"wrong_accusations": wrong_accusations.duplicate(true)}
++
++
++## One paragraph on how the leak investigation ended, for the ending screen.
++func case_summary() -> String:
++	var spy_name: String = characters[spy_id]["name"]
++	var text := ""
++	if case_state == "solved":
++		if solved_day <= FIRST_ACCUSATION_DAY:
++			text = "You named %s as the leaker on day %d. NVision contained the leak almost immediately, investors cheered the rapid response, and the stock is soaring." % [spy_name, solved_day]
++		else:
++			text = "You named %s as the leaker on day %d. The leak is stopped and NVision's secrets are safe, though the delay cost the company some confidence." % [spy_name, solved_day]
++	elif case_state == "failed":
++		text = "You never caught the leaker. %s released NVision's confidential files, the company's secrets are public, and the Board has fired you." % spy_name
++	else:
++		return ""
++	if not wrong_accusations.is_empty():
++		var names: Array = []
++		for w in wrong_accusations:
++			names.append(characters[w["id"]]["name"])
++		text += " Along the way you wrongly accused %s, and those relationships are now front-page news." % ", ".join(PackedStringArray(names))
++	return text

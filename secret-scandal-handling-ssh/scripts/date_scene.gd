@@ -74,6 +74,13 @@ func _ready() -> void:
 			randi() % keys.size()
 		]
 
+	# A woman Johnson wrongly accused of leaking will never date him again.
+	if GameState.is_accused(char_id):
+		get_tree().change_scene_to_file.call_deferred(
+			GameState.DATE_SELECT_SCENE
+		)
+		return
+
 	# --------------------------------------------------
 	# Background
 	# --------------------------------------------------
