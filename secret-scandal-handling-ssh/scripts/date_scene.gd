@@ -143,7 +143,7 @@ func _show_choices(choices: Array) -> void:
 	if GameState.dumped[char_id] or exchanges >= MAX_EXCHANGES:
 		var done := Button.new()
 		done.text = "Leave" if GameState.dumped[char_id] else "End date"
-		done.pressed.connect(func(): get_tree().change_scene_to_file("res://scenes/date_select.tscn"))
+		done.pressed.connect(_end_date)
 		_choices.add_child(done)
 		return
 	for ch in choices:
@@ -151,6 +151,12 @@ func _show_choices(choices: Array) -> void:
 		b.text = str(ch["text"])
 		b.pressed.connect(_on_choice.bind(ch))
 		_choices.add_child(b)
+
+
+## GameState decides what's next: another date, the work minigame, the next day, or the ending.
+func _end_date() -> void:
+	GameState.finish_date(char_id)
+	GameState.go_next()
 
 
 func _on_choice(choice: Dictionary) -> void:

@@ -102,6 +102,8 @@ func _set_hover(id: String) -> void:
 	place = place.trim_suffix(" Interior").trim_suffix(" Workspace")
 	if GameState.dumped[id]:
 		_info_detail.text = "%s ended things with you." % c["name"]
+	elif GameState.has_dated_today(id):
+		_info_detail.text = "You already saw %s today." % c["name"]
 	else:
 		_info_detail.text = "%s   -   %s   -   Trustmeter: %s" % [c["role"], place, GameState.trust_label(id)]
 	# gentle breathing pulse on the glow
@@ -138,6 +140,8 @@ func _unhandled_input(e: InputEvent) -> void:
 func _on_pick(id: String) -> void:
 	if GameState.dumped[id]:
 		return          # she has already left him for good
+	if GameState.has_dated_today(id):
+		return          # one date per woman per day
 	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 	GameState.set_meta("current_date", id)
 	get_tree().change_scene_to_file("res://scenes/date_scene.tscn")

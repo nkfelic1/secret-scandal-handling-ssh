@@ -1,0 +1,73 @@
+{
+	"_help": "One prompt-engineering minigame per day. timing: before_dates | after_dates. kind: email | post | text | code. time = seconds on the timer. intro = Johnson's lead-in lines (one click each). pose = his expression (smile, laugh, thinking, surprised, blushing, serious). night = darker background. headline = news line on the 'DAY N' card shown at the start of before_dates days.",
+	"days": {
+		"1": {
+			"timing": "after_dates",
+			"kind": "email",
+			"time": 90,
+			"to": "president@nvision.com",
+			"subject": "My sincere apology",
+			"task": "This morning the President told you news of your affair has leaked. Write the President an email apologizing: take responsibility, no excuses, and say how you'll handle it.",
+			"intro": [
+				"Five dates in one day... and the President is still waiting on my apology.",
+				"I'd better write that email before bed."
+			],
+			"night": true,
+			"pose": "thinking"
+		},
+		"2": {
+			"timing": "before_dates",
+			"kind": "post",
+			"time": 90,
+			"account": "NVision",
+			"handle": "@NVision",
+			"task": "Overnight, confidential NVision plans were leaked online. Write a post for NVision's official account to do damage control: reassure customers and investors, don't reveal more details, and don't blame anyone yet.",
+			"intro": [
+				"The leak is all over the news.",
+				"PR wants a statement up before the market opens. Let's get to work."
+			],
+			"headline": "BREAKING: Confidential NVision plans leaked online",
+			"pose": "serious"
+		},
+		"3": {
+			"timing": "before_dates",
+			"kind": "text",
+			"time": 90,
+			"incoming": "Hey... people are saying things about you. Is it true you're seeing other people??",
+			"task": "Word about your love life is spreading and your phone won't stop buzzing. Pick one of the women you're seeing and text her to smooth things over. Keep it short, warm and believable.",
+			"intro": [
+				"My phone won't stop buzzing...",
+				"I need to text one of them back. Carefully."
+			],
+			"headline": "Rumors swirl about NVision CEO's love life",
+			"pose": "surprised"
+		},
+		"4": {
+			"timing": "before_dates",
+			"kind": "code",
+			"time": 120,
+			"filename": "leak_detector.py",
+			"task": "Engineering is buried in leak fallout, so you're coding today. Write a Python function flag_suspicious(downloads): given (employee, file_count) pairs, return employees who downloaded over 50 confidential files.",
+			"intro": [
+				"Engineering's buried in leak fallout.",
+				"Guess I'm writing the leak detector myself."
+			],
+			"headline": "NVision launches internal leak investigation",
+			"pose": "thinking"
+		},
+		"5": {
+			"timing": "before_dates",
+			"kind": "post",
+			"time": 90,
+			"account": "Johnson Jeng",
+			"handle": "@JohnsonJeng",
+			"task": "News of your affair just went public. Write a post from your personal account to do damage control: take responsibility, protect NVision's reputation, and keep it short and sincere.",
+			"intro": [
+				"It's out. Everyone knows.",
+				"Time to face the internet."
+			],
+			"headline": "CONFIRMED: NVision CEO's affair goes public",
+			"pose": "serious"
+		}
+	}
+}

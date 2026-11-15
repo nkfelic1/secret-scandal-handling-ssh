@@ -1,0 +1,1537 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/prompt_minigame.gd" id="1"]
+[ext_resource type="Texture2D" path="res://art/prompt_minigame/tablet_split_screen.png" id="2"]
+[ext_resource type="Texture2D" path="res://art/prompt_minigame/chibi_head.png" id="3"]
+[ext_resource type="Texture2D" path="res://art/prompt_minigame/goal_large.png" id="4"]
+[ext_resource type="Texture2D" path="res://art/prompt_minigame/timer_large.png" id="5"]
+[ext_resource type="Texture2D" path="res://art/prompt_minigame/prompt_instructions.png" id="6"]
+[ext_resource type="Texture2D" path="res://art/prompt_minigame/chibi_full_body.png" id="7"]
+[ext_resource type="Texture2D" path="res://art/characters/johnson_jeng/04_expression_thinking.png" id="8"]
+[ext_resource type="Texture2D" path="res://art/backgrounds/NVision_HQ_Sunset.png" id="9"]
+
+[sub_resource type="StyleBoxFlat" id="CardStyle"]
+content_margin_left = 14.0
+content_margin_top = 10.0
+content_margin_right = 14.0
+content_margin_bottom = 10.0
+bg_color = Color(0.2, 0.03, 0.2, 0.95)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.3, 0.75, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="TimerStyle"]
+bg_color = Color(0.33, 0.01, 0.27, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="WhiteBox"]
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 2.0
+bg_color = Color(0.992, 0.992, 0.992, 1)
+
+[sub_resource type="StyleBoxEmpty" id="Clear"]
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="PinkButton"]
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
+bg_color = Color(0.85, 0.15, 0.55, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="PinkButtonHover"]
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
+bg_color = Color(0.95, 0.32, 0.67, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="PinkButtonPressed"]
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
+bg_color = Color(0.6, 0.08, 0.4, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="SmallButton"]
+content_margin_left = 6.0
+content_margin_top = 1.0
+content_margin_right = 6.0
+content_margin_bottom = 1.0
+bg_color = Color(0.9, 0.9, 0.95, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.75, 0.75, 0.82, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="SmallButtonHover"]
+content_margin_left = 6.0
+content_margin_top = 1.0
+content_margin_right = 6.0
+content_margin_bottom = 1.0
+bg_color = Color(0.82, 0.86, 1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.55, 0.6, 0.9, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="PillStyle"]
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.86, 0.87, 0.92, 1)
+bg_color = Color(0.941, 0.949, 0.976, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
+[sub_resource type="StyleBoxFlat" id="NewChatStyle"]
+content_margin_left = 10.0
+content_margin_right = 10.0
+bg_color = Color(0.87, 0.89, 0.95, 1)
+corner_radius_top_left = 13
+corner_radius_top_right = 13
+corner_radius_bottom_right = 13
+corner_radius_bottom_left = 13
+
+[sub_resource type="StyleBoxFlat" id="SendCircle"]
+bg_color = Color(0.87, 0.89, 0.95, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="SendCircleHover"]
+bg_color = Color(0.76, 0.82, 0.97, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="BuzzPill"]
+content_margin_left = 12.0
+content_margin_top = 2.0
+content_margin_right = 12.0
+content_margin_bottom = 2.0
+bg_color = Color(0.42, 0.3, 0.96, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="BuzzPillHover"]
+content_margin_left = 12.0
+content_margin_top = 2.0
+content_margin_right = 12.0
+content_margin_bottom = 2.0
+bg_color = Color(0.52, 0.42, 1, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="Avatar"]
+bg_color = Color(0.42, 0.3, 0.96, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="Bubble"]
+content_margin_left = 10.0
+content_margin_top = 7.0
+content_margin_right = 10.0
+content_margin_bottom = 7.0
+bg_color = Color(0.91, 0.91, 0.94, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="TextInput"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.94, 0.94, 0.96, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="BlueCircle"]
+bg_color = Color(0.1, 0.45, 0.95, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="BlueCircleHover"]
+bg_color = Color(0.25, 0.55, 1, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="CodeBg"]
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 2.0
+bg_color = Color(0.118, 0.125, 0.157, 1)
+corner_radius_top_left = 0
+corner_radius_top_right = 0
+corner_radius_bottom_right = 0
+corner_radius_bottom_left = 0
+
+[sub_resource type="StyleBoxFlat" id="CodeTab"]
+content_margin_left = 8.0
+content_margin_top = 0.0
+content_margin_right = 8.0
+content_margin_bottom = 0.0
+bg_color = Color(0.118, 0.125, 0.157, 1)
+corner_radius_top_left = 0
+corner_radius_top_right = 0
+corner_radius_bottom_right = 0
+corner_radius_bottom_left = 0
+
+[sub_resource type="StyleBoxFlat" id="Commit"]
+content_margin_left = 10.0
+content_margin_top = 2.0
+content_margin_right = 10.0
+content_margin_bottom = 2.0
+bg_color = Color(0.16, 0.6, 0.3, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="CommitHover"]
+content_margin_left = 10.0
+content_margin_top = 2.0
+content_margin_right = 10.0
+content_margin_bottom = 2.0
+bg_color = Color(0.22, 0.7, 0.36, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="GoalOverlay"]
+content_margin_left = 6.0
+content_margin_top = 4.0
+content_margin_right = 6.0
+content_margin_bottom = 4.0
+bg_color = Color(0.21, 0.02, 0.21, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="InstrOverlay"]
+content_margin_left = 6.0
+content_margin_top = 4.0
+content_margin_right = 6.0
+content_margin_bottom = 4.0
+bg_color = Color(0.988, 0.894, 0.973, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="SystemFont" id="Mono"]
+font_names = PackedStringArray("Consolas", "Cascadia Mono", "Courier New", "Monospace")
+
+[sub_resource type="StyleBoxFlat" id="DialogueStyle"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.05, 0.05, 0.08, 0.85)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[node name="PromptMinigame" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.09, 0.03, 0.12, 1)
+
+[node name="TopBar" type="Control" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 118.0
+
+[node name="ChibiHead" type="TextureRect" parent="TopBar"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 8.0
+offset_right = 128.0
+offset_bottom = 110.0
+texture = ExtResource("3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TaskCard" type="PanelContainer" parent="TopBar"]
+layout_mode = 0
+offset_left = 138.0
+offset_top = 8.0
+offset_right = 730.0
+offset_bottom = 114.0
+theme_override_styles/panel = SubResource("CardStyle")
+
+[node name="VBox" type="VBoxContainer" parent="TopBar/TaskCard"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="TaskTitle" type="Label" parent="TopBar/TaskCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.5, 0.85, 1)
+theme_override_font_sizes/font_size = 15
+text = "YOUR TASK"
+
+[node name="TaskText" type="Label" parent="TopBar/TaskCard/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 15
+text = "Task goes here."
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 3
+
+[node name="Goal" type="TextureRect" parent="TopBar"]
+layout_mode = 0
+offset_left = 744.0
+offset_top = 6.0
+offset_right = 964.0
+offset_bottom = 112.0
+texture = ExtResource("4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Timer" type="TextureRect" parent="TopBar"]
+layout_mode = 0
+offset_left = 990.0
+offset_top = 11.0
+offset_right = 1250.0
+offset_bottom = 107.0
+texture = ExtResource("5")
+
+[node name="TimerLabel" type="Label" parent="TopBar/Timer"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 92.0
+offset_top = 17.0
+offset_right = 246.0
+offset_bottom = 79.0
+theme_override_colors/font_color = Color(1, 0.85, 0.95, 1)
+theme_override_font_sizes/font_size = 44
+theme_override_styles/normal = SubResource("TimerStyle")
+text = "1:30"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GoalText" type="Label" parent="TopBar"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 768.0
+offset_top = 14.0
+offset_right = 940.0
+offset_bottom = 104.0
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("GoalOverlay")
+text = "Goal"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Tablet" type="Control" parent="."]
+layout_mode = 0
+offset_left = 74.0
+offset_top = 118.0
+offset_right = 1046.0
+offset_bottom = 628.0
+scale = Vector2(1.165, 1.165)
+
+[node name="Screen" type="TextureRect" parent="Tablet"]
+layout_mode = 0
+offset_right = 972.0
+offset_bottom = 510.0
+texture = ExtResource("2")
+
+[node name="ToField" type="LineEdit" parent="Tablet"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 222.0
+offset_top = 234.0
+offset_right = 438.0
+offset_bottom = 260.0
+theme_override_colors/font_color = Color(0.15, 0.15, 0.22, 1)
+theme_override_colors/font_placeholder_color = Color(0.6, 0.6, 0.68, 1)
+theme_override_colors/caret_color = Color(0.15, 0.15, 0.22, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("Clear")
+theme_override_styles/focus = SubResource("Clear")
+theme_override_styles/read_only = SubResource("Clear")
+placeholder_text = "recipient@email.com"
+
+[node name="SubjectField" type="LineEdit" parent="Tablet"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 246.0
+offset_top = 270.0
+offset_right = 440.0
+offset_bottom = 296.0
+theme_override_colors/font_color = Color(0.15, 0.15, 0.22, 1)
+theme_override_colors/caret_color = Color(0.15, 0.15, 0.22, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("WhiteBox")
+theme_override_styles/focus = SubResource("WhiteBox")
+theme_override_styles/read_only = SubResource("WhiteBox")
+text = "Project Update"
+
+[node name="EmailBody" type="TextEdit" parent="Tablet"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 312.0
+offset_right = 445.0
+offset_bottom = 393.0
+theme_override_colors/font_color = Color(0.15, 0.15, 0.22, 1)
+theme_override_colors/font_placeholder_color = Color(0.6, 0.6, 0.68, 1)
+theme_override_colors/caret_color = Color(0.15, 0.15, 0.22, 1)
+theme_override_colors/selection_color = Color(0.7, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("WhiteBox")
+theme_override_styles/focus = SubResource("WhiteBox")
+theme_override_styles/read_only = SubResource("WhiteBox")
+placeholder_text = "Paste Gemini's email here (Ctrl+V)..."
+wrap_mode = 1
+
+[node name="SendButton" type="Button" parent="Tablet"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 193.0
+offset_top = 438.0
+offset_right = 264.0
+offset_bottom = 468.0
+tooltip_text = "Send the email"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="TrashButton" type="Button" parent="Tablet"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 421.0
+offset_top = 441.0
+offset_right = 443.0
+offset_bottom = 466.0
+tooltip_text = "Clear the email"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="LeftTab" type="ColorRect" parent="Tablet"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 101.0
+offset_top = 52.0
+offset_right = 225.0
+offset_bottom = 75.0
+mouse_filter = 2
+color = Color(0.98, 0.98, 0.984, 1)
+
+[node name="LeftTabIcon" type="Panel" parent="Tablet/LeftTab"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 3.0
+offset_top = 4.0
+offset_right = 17.0
+offset_bottom = 18.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Avatar")
+
+[node name="LeftTabLabel" type="Label" parent="Tablet/LeftTab"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 24.0
+offset_top = 0.0
+offset_right = 124.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_font_sizes/font_size = 13
+text = "Tab"
+vertical_alignment = 1
+clip_text = true
+
+[node name="LeftUrl" type="ColorRect" parent="Tablet"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 162.0
+offset_top = 91.0
+offset_right = 330.0
+offset_bottom = 113.0
+mouse_filter = 2
+color = Color(0.91, 0.914, 0.953, 1)
+
+[node name="LeftUrlLabel" type="Label" parent="Tablet/LeftUrl"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = 0.0
+offset_right = 168.0
+offset_bottom = 22.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_font_sizes/font_size = 13
+text = "url"
+vertical_alignment = 1
+clip_text = true
+
+[node name="PostPane" type="ColorRect" parent="Tablet"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 23.0
+offset_top = 123.0
+offset_right = 459.0
+offset_bottom = 471.0
+color = Color(1, 1, 1, 1)
+
+[node name="PostHeader" type="Label" parent="Tablet/PostPane"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 8.0
+offset_right = 300.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_font_sizes/font_size = 17
+text = "Create post"
+vertical_alignment = 1
+
+[node name="PostRule" type="ColorRect" parent="Tablet/PostPane"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 42.0
+offset_right = 436.0
+offset_bottom = 43.0
+mouse_filter = 2
+color = Color(0.9, 0.9, 0.93, 1)
+
+[node name="PostAvatar" type="Panel" parent="Tablet/PostPane"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 56.0
+offset_right = 56.0
+offset_bottom = 96.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Avatar")
+
+[node name="PostAvatarLetter" type="Label" parent="Tablet/PostPane/PostAvatar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "N"
+vertical_alignment = 1
+horizontal_alignment = 1
+
+[node name="PostAccount" type="Label" parent="Tablet/PostPane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 66.0
+offset_top = 56.0
+offset_right = 400.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_font_sizes/font_size = 14
+text = "Account"
+vertical_alignment = 1
+
+[node name="PostHandle" type="Label" parent="Tablet/PostPane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 66.0
+offset_top = 76.0
+offset_right = 400.0
+offset_bottom = 94.0
+theme_override_colors/font_color = Color(0.45, 0.46, 0.52, 1)
+theme_override_font_sizes/font_size = 12
+text = "@handle"
+vertical_alignment = 1
+
+[node name="PostBody" type="TextEdit" parent="Tablet/PostPane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 12.0
+offset_top = 102.0
+offset_right = 424.0
+offset_bottom = 292.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_colors/font_placeholder_color = Color(0.55, 0.56, 0.62, 1)
+theme_override_colors/caret_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_colors/selection_color = Color(0.7, 0.8, 1, 0.6)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("Clear")
+theme_override_styles/focus = SubResource("Clear")
+theme_override_styles/read_only = SubResource("Clear")
+placeholder_text = "What's happening? (paste Gemini's post here)"
+wrap_mode = 1
+
+[node name="PostRule2" type="ColorRect" parent="Tablet/PostPane"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 296.0
+offset_right = 420.0
+offset_bottom = 297.0
+mouse_filter = 2
+color = Color(0.9, 0.9, 0.93, 1)
+
+[node name="PostCount" type="Label" parent="Tablet/PostPane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 180.0
+offset_top = 304.0
+offset_right = 330.0
+offset_bottom = 334.0
+theme_override_colors/font_color = Color(0.45, 0.46, 0.52, 1)
+theme_override_font_sizes/font_size = 12
+text = "0 / 280"
+vertical_alignment = 1
+horizontal_alignment = 2
+
+[node name="PostButton" type="Button" parent="Tablet/PostPane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 340.0
+offset_top = 303.0
+offset_right = 420.0
+offset_bottom = 335.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("BuzzPill")
+theme_override_styles/hover = SubResource("BuzzPillHover")
+theme_override_styles/pressed = SubResource("BuzzPillHover")
+theme_override_styles/disabled = SubResource("BuzzPill")
+text = "Post"
+
+[node name="TextPane" type="ColorRect" parent="Tablet"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 23.0
+offset_top = 123.0
+offset_right = 459.0
+offset_bottom = 471.0
+color = Color(1, 1, 1, 1)
+
+[node name="TextHeader" type="ColorRect" parent="Tablet/TextPane"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 436.0
+offset_bottom = 46.0
+mouse_filter = 2
+color = Color(0.965, 0.965, 0.975, 1)
+
+[node name="ToLabel" type="Label" parent="Tablet/TextPane"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 8.0
+offset_right = 44.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.45, 0.46, 0.52, 1)
+theme_override_font_sizes/font_size = 14
+text = "To:"
+vertical_alignment = 1
+
+[node name="TextRecipient" type="OptionButton" parent="Tablet/TextPane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 46.0
+offset_top = 8.0
+offset_right = 270.0
+offset_bottom = 38.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 13
+
+[node name="TextTime" type="Label" parent="Tablet/TextPane"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 54.0
+offset_right = 436.0
+offset_bottom = 72.0
+theme_override_colors/font_color = Color(0.45, 0.46, 0.52, 1)
+theme_override_font_sizes/font_size = 10
+text = "Today 8:02 AM"
+horizontal_alignment = 1
+
+[node name="IncomingBubble" type="Label" parent="Tablet/TextPane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 76.0
+offset_right = 300.0
+offset_bottom = 110.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_font_sizes/font_size = 13
+text = "Incoming"
+theme_override_styles/normal = SubResource("Bubble")
+autowrap_mode = 3
+
+[node name="TextBody" type="TextEdit" parent="Tablet/TextPane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 12.0
+offset_top = 266.0
+offset_right = 374.0
+offset_bottom = 336.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_colors/font_placeholder_color = Color(0.55, 0.56, 0.62, 1)
+theme_override_colors/caret_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_colors/selection_color = Color(0.7, 0.8, 1, 0.6)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("TextInput")
+theme_override_styles/focus = SubResource("TextInput")
+theme_override_styles/read_only = SubResource("TextInput")
+placeholder_text = "Text message (paste Gemini's text here)"
+wrap_mode = 1
+
+[node name="SendTextButton" type="Button" parent="Tablet/TextPane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 382.0
+offset_top = 283.0
+offset_right = 418.0
+offset_bottom = 319.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("BlueCircle")
+theme_override_styles/hover = SubResource("BlueCircleHover")
+theme_override_styles/pressed = SubResource("BlueCircleHover")
+theme_override_styles/disabled = SubResource("BlueCircle")
+text = ""
+
+[node name="UpArrow" type="Polygon2D" parent="Tablet/TextPane/SendTextButton"]
+position = Vector2(18, 18)
+color = Color(1, 1, 1, 1)
+polygon = PackedVector2Array(0, -8, 7, 0, 2, 0, 2, 8, -2, 8, -2, 0, -7, 0)
+
+[node name="CodePane" type="ColorRect" parent="Tablet"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 23.0
+offset_top = 123.0
+offset_right = 459.0
+offset_bottom = 471.0
+color = Color(0.118, 0.125, 0.157, 1)
+
+[node name="CodeTabBar" type="ColorRect" parent="Tablet/CodePane"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 436.0
+offset_bottom = 28.0
+mouse_filter = 2
+color = Color(0.08, 0.085, 0.105, 1)
+
+[node name="CodeFile" type="Label" parent="Tablet/CodePane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 170.0
+offset_bottom = 28.0
+theme_override_colors/font_color = Color(0.85, 0.87, 0.92, 1)
+theme_override_font_sizes/font_size = 12
+text = "file.py"
+theme_override_styles/normal = SubResource("CodeTab")
+vertical_alignment = 1
+clip_text = true
+
+[node name="CodeBody" type="CodeEdit" parent="Tablet/CodePane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_top = 28.0
+offset_right = 436.0
+offset_bottom = 300.0
+theme_override_colors/font_color = Color(0.85, 0.87, 0.92, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.48, 0.55, 1)
+theme_override_colors/caret_color = Color(1, 1, 1, 1)
+theme_override_colors/line_number_color = Color(0.4, 0.43, 0.5, 1)
+theme_override_colors/selection_color = Color(0.3, 0.4, 0.6, 0.6)
+theme_override_colors/current_line_color = Color(1, 1, 1, 0.04)
+theme_override_fonts/font = SubResource("Mono")
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("CodeBg")
+theme_override_styles/focus = SubResource("CodeBg")
+theme_override_styles/read_only = SubResource("CodeBg")
+placeholder_text = "# Paste Gemini's code here (Ctrl+V)"
+highlight_current_line = true
+gutters_draw_line_numbers = true
+indent_automatic = true
+wrap_mode = 1
+
+[node name="CodeStatus" type="ColorRect" parent="Tablet/CodePane"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 300.0
+offset_right = 436.0
+offset_bottom = 348.0
+mouse_filter = 2
+color = Color(0.08, 0.085, 0.105, 1)
+
+[node name="CodeBranch" type="Label" parent="Tablet/CodePane"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 308.0
+offset_right = 290.0
+offset_bottom = 340.0
+theme_override_colors/font_color = Color(0.55, 0.58, 0.65, 1)
+theme_override_font_sizes/font_size = 11
+text = "main  -  nvision/security"
+vertical_alignment = 1
+
+[node name="CommitButton" type="Button" parent="Tablet/CodePane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 318.0
+offset_top = 309.0
+offset_right = 424.0
+offset_bottom = 339.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("Commit")
+theme_override_styles/hover = SubResource("CommitHover")
+theme_override_styles/pressed = SubResource("CommitHover")
+theme_override_styles/disabled = SubResource("Commit")
+text = "Commit"
+
+[node name="GeminiTab" type="ColorRect" parent="Tablet"]
+layout_mode = 0
+offset_left = 540.0
+offset_top = 52.0
+offset_right = 664.0
+offset_bottom = 75.0
+mouse_filter = 2
+color = Color(0.98, 0.98, 0.984, 1)
+
+[node name="TabSparkle" type="Polygon2D" parent="Tablet/GeminiTab"]
+position = Vector2(10, 11.5)
+scale = Vector2(0.85, 0.85)
+polygon = PackedVector2Array(0, -8, 2, -2, 8, 0, 2, 2, 0, 8, -2, 2, -8, 0, -2, -2)
+vertex_colors = PackedColorArray(0.26, 0.52, 0.96, 1, 0.45, 0.5, 0.92, 1, 0.61, 0.45, 0.8, 1, 0.75, 0.42, 0.6, 1, 0.85, 0.4, 0.44, 1, 0.6, 0.45, 0.8, 1, 0.26, 0.52, 0.96, 1, 0.3, 0.5, 0.95, 1)
+
+[node name="TabLabel" type="Label" parent="Tablet/GeminiTab"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 0.0
+offset_right = 124.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_font_sizes/font_size = 13
+text = "Gemini"
+vertical_alignment = 1
+
+[node name="GeminiUrl" type="ColorRect" parent="Tablet"]
+layout_mode = 0
+offset_left = 608.0
+offset_top = 91.0
+offset_right = 762.0
+offset_bottom = 113.0
+mouse_filter = 2
+color = Color(0.91, 0.914, 0.953, 1)
+
+[node name="UrlLabel" type="Label" parent="Tablet/GeminiUrl"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 0.0
+offset_right = 154.0
+offset_bottom = 22.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_font_sizes/font_size = 13
+text = "gemini.google.com"
+vertical_alignment = 1
+
+[node name="GeminiSidebar" type="ColorRect" parent="Tablet"]
+layout_mode = 0
+offset_left = 463.0
+offset_top = 123.0
+offset_right = 607.0
+offset_bottom = 471.0
+mouse_filter = 2
+color = Color(0.941, 0.949, 0.976, 1)
+
+[node name="Menu0" type="ColorRect" parent="Tablet/GeminiSidebar"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 14.0
+offset_right = 30.0
+offset_bottom = 16.0
+mouse_filter = 2
+color = Color(0.45, 0.46, 0.52, 1)
+
+[node name="Menu1" type="ColorRect" parent="Tablet/GeminiSidebar"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 19.0
+offset_right = 30.0
+offset_bottom = 21.0
+mouse_filter = 2
+color = Color(0.45, 0.46, 0.52, 1)
+
+[node name="Menu2" type="ColorRect" parent="Tablet/GeminiSidebar"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 24.0
+offset_right = 30.0
+offset_bottom = 26.0
+mouse_filter = 2
+color = Color(0.45, 0.46, 0.52, 1)
+
+[node name="NewChat" type="Label" parent="Tablet/GeminiSidebar"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 42.0
+offset_right = 104.0
+offset_bottom = 68.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_font_sizes/font_size = 12
+text = "+   New chat"
+theme_override_styles/normal = SubResource("NewChatStyle")
+vertical_alignment = 1
+
+[node name="RecentTitle" type="Label" parent="Tablet/GeminiSidebar"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 84.0
+offset_right = 134.0
+offset_bottom = 100.0
+theme_override_colors/font_color = Color(0.45, 0.46, 0.52, 1)
+theme_override_font_sizes/font_size = 11
+text = "Recent"
+
+[node name="Recent0" type="Label" parent="Tablet/GeminiSidebar"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 104.0
+offset_right = 140.0
+offset_bottom = 120.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_font_sizes/font_size = 11
+text = "Board meeting prep"
+clip_text = true
+
+[node name="Recent1" type="Label" parent="Tablet/GeminiSidebar"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 124.0
+offset_right = 140.0
+offset_bottom = 140.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_font_sizes/font_size = 11
+text = "Dinner spots near HQ"
+clip_text = true
+
+[node name="Recent2" type="Label" parent="Tablet/GeminiSidebar"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 144.0
+offset_right = 140.0
+offset_bottom = 160.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_font_sizes/font_size = 11
+text = "How to apologize well"
+clip_text = true
+
+[node name="Settings" type="Label" parent="Tablet/GeminiSidebar"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 318.0
+offset_right = 140.0
+offset_bottom = 336.0
+theme_override_colors/font_color = Color(0.45, 0.46, 0.52, 1)
+theme_override_font_sizes/font_size = 11
+text = "Settings & help"
+
+[node name="GeminiMain" type="ColorRect" parent="Tablet"]
+layout_mode = 0
+offset_left = 607.0
+offset_top = 123.0
+offset_right = 945.0
+offset_bottom = 471.0
+mouse_filter = 2
+color = Color(0.992, 0.992, 0.992, 1)
+
+[node name="ModelName" type="Label" parent="Tablet/GeminiMain"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 26.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.26, 1)
+theme_override_font_sizes/font_size = 15
+text = "Gemini"
+vertical_alignment = 1
+
+[node name="ModelVersion" type="Label" parent="Tablet/GeminiMain"]
+layout_mode = 0
+offset_left = 68.0
+offset_top = 6.0
+offset_right = 200.0
+offset_bottom = 26.0
+theme_override_colors/font_color = Color(0.45, 0.46, 0.52, 1)
+theme_override_font_sizes/font_size = 10
+text = "3.1 Flash-Lite"
+vertical_alignment = 1
+
+[node name="Welcome" type="Control" parent="Tablet/GeminiMain"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 338.0
+offset_bottom = 200.0
+mouse_filter = 2
+
+[node name="Sparkle" type="Polygon2D" parent="Tablet/GeminiMain/Welcome"]
+position = Vector2(169, 62)
+scale = Vector2(1.6, 1.6)
+polygon = PackedVector2Array(0, -8, 2, -2, 8, 0, 2, 2, 0, 8, -2, 2, -8, 0, -2, -2)
+vertex_colors = PackedColorArray(0.26, 0.52, 0.96, 1, 0.45, 0.5, 0.92, 1, 0.61, 0.45, 0.8, 1, 0.75, 0.42, 0.6, 1, 0.85, 0.4, 0.44, 1, 0.6, 0.45, 0.8, 1, 0.26, 0.52, 0.96, 1, 0.3, 0.5, 0.95, 1)
+
+[node name="Greeting" type="RichTextLabel" parent="Tablet/GeminiMain/Welcome"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 80.0
+offset_right = 338.0
+offset_bottom = 118.0
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 26
+bbcode_enabled = true
+text = "[center]Hello, Johnson[/center]"
+scroll_active = false
+
+[node name="GreetSub" type="Label" parent="Tablet/GeminiMain/Welcome"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 118.0
+offset_right = 338.0
+offset_bottom = 140.0
+theme_override_colors/font_color = Color(0.45, 0.46, 0.52, 1)
+theme_override_font_sizes/font_size = 14
+text = "How can I help you today?"
+horizontal_alignment = 1
+
+[node name="InputPill" type="Panel" parent="Tablet/GeminiMain"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 204.0
+offset_right = 323.0
+offset_bottom = 288.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("PillStyle")
+
+[node name="Footnote" type="Label" parent="Tablet/GeminiMain"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 292.0
+offset_right = 338.0
+offset_bottom = 308.0
+theme_override_colors/font_color = Color(0.45, 0.46, 0.52, 1)
+theme_override_font_sizes/font_size = 9
+text = "Gemini can make mistakes, so double-check it"
+horizontal_alignment = 1
+
+[node name="ChatPanel" type="Control" parent="Tablet"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 612.0
+offset_top = 156.0
+offset_right = 940.0
+offset_bottom = 324.0
+clip_contents = true
+
+[node name="ChatLog" type="RichTextLabel" parent="Tablet/ChatPanel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 326.0
+offset_bottom = 144.0
+clip_contents = true
+theme_override_colors/default_color = Color(0.15, 0.15, 0.22, 1)
+theme_override_colors/selection_color = Color(0.7, 0.8, 1, 1)
+theme_override_font_sizes/normal_font_size = 11
+theme_override_font_sizes/bold_font_size = 11
+bbcode_enabled = true
+scroll_following = true
+selection_enabled = true
+
+[node name="CopyButton" type="Button" parent="Tablet/ChatPanel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 222.0
+offset_top = 150.0
+offset_right = 326.0
+offset_bottom = 170.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(0.15, 0.15, 0.22, 1)
+theme_override_colors/font_hover_color = Color(0.15, 0.15, 0.22, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("SmallButton")
+theme_override_styles/hover = SubResource("SmallButtonHover")
+theme_override_styles/pressed = SubResource("SmallButtonHover")
+disabled = true
+text = "Copy reply"
+
+[node name="PromptInput" type="TextEdit" parent="Tablet"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 634.0
+offset_top = 331.0
+offset_right = 892.0
+offset_bottom = 408.0
+theme_override_colors/font_color = Color(0.15, 0.15, 0.22, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.46, 0.52, 1)
+theme_override_colors/caret_color = Color(0.15, 0.15, 0.22, 1)
+theme_override_colors/selection_color = Color(0.7, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("Clear")
+theme_override_styles/focus = SubResource("Clear")
+theme_override_styles/read_only = SubResource("Clear")
+placeholder_text = "Ask Gemini"
+wrap_mode = 1
+
+[node name="AskButton" type="Button" parent="Tablet"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 896.0
+offset_top = 372.0
+offset_right = 926.0
+offset_bottom = 402.0
+tooltip_text = "Send prompt"
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("SendCircle")
+theme_override_styles/hover = SubResource("SendCircleHover")
+theme_override_styles/pressed = SubResource("SendCircleHover")
+theme_override_styles/disabled = SubResource("SendCircle")
+
+[node name="Arrow" type="Polygon2D" parent="Tablet/AskButton"]
+position = Vector2(15, 15)
+color = Color(0.25, 0.27, 0.35, 1)
+polygon = PackedVector2Array(-6, -6, 7, 0, -6, 6, -3, 0)
+
+[node name="Toast" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 440.0
+offset_top = 640.0
+offset_right = 840.0
+offset_bottom = 690.0
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("CardStyle")
+text = "Sending..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Intro" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="Instructions" type="TextureRect" parent="Intro"]
+layout_mode = 0
+offset_left = 456.0
+offset_top = 110.0
+offset_right = 823.0
+offset_bottom = 313.0
+texture = ExtResource("6")
+
+[node name="InstrText" type="Label" parent="Intro/Instructions"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 24.0
+offset_top = 80.0
+offset_right = 345.0
+offset_bottom = 188.0
+theme_override_colors/font_color = Color(0.22, 0.04, 0.26, 1)
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("InstrOverlay")
+text = "Instructions"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="IntroTask" type="Label" parent="Intro"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 290.0
+offset_top = 322.0
+offset_right = 990.0
+offset_bottom = 500.0
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("CardStyle")
+text = "Task"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="StartButton" type="Button" parent="Intro"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 560.0
+offset_top = 520.0
+offset_right = 720.0
+offset_bottom = 570.0
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("PinkButton")
+theme_override_styles/hover = SubResource("PinkButtonHover")
+theme_override_styles/pressed = SubResource("PinkButtonPressed")
+text = "Start"
+
+[node name="Results" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="Chibi" type="TextureRect" parent="Results"]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 230.0
+offset_right = 341.0
+offset_bottom = 553.0
+texture = ExtResource("7")
+
+[node name="Card" type="PanelContainer" parent="Results"]
+layout_mode = 0
+offset_left = 360.0
+offset_top = 140.0
+offset_right = 1060.0
+offset_bottom = 580.0
+theme_override_styles/panel = SubResource("CardStyle")
+
+[node name="VBox" type="VBoxContainer" parent="Results/Card"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ResultTitle" type="Label" parent="Results/Card/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.5, 0.85, 1)
+theme_override_font_sizes/font_size = 30
+text = "Grading your email..."
+horizontal_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="Results/Card/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+
+[node name="Feedback" type="RichTextLabel" parent="Results/Card/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 17
+theme_override_font_sizes/bold_font_size = 17
+bbcode_enabled = true
+
+[node name="Buttons" type="HBoxContainer" parent="Results/Card/VBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="RetryButton" type="Button" parent="Results/Card/VBox/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("PinkButton")
+theme_override_styles/hover = SubResource("PinkButtonHover")
+theme_override_styles/pressed = SubResource("PinkButtonPressed")
+text = "Try again"
+
+[node name="ContinueButton" type="Button" parent="Results/Card/VBox/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("PinkButton")
+theme_override_styles/hover = SubResource("PinkButtonHover")
+theme_override_styles/pressed = SubResource("PinkButtonPressed")
+text = "Continue"
+
+[node name="Briefing" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+
+[node name="BriefBacking" type="ColorRect" parent="Briefing"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.05, 0.03, 0.08, 1)
+
+[node name="BriefBg" type="TextureRect" parent="Briefing"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("9")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="BriefPortrait" type="TextureRect" parent="Briefing"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 700.0
+offset_top = 40.0
+offset_right = 1200.0
+offset_bottom = 620.0
+mouse_filter = 2
+texture = ExtResource("8")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BriefPanel" type="PanelContainer" parent="Briefing"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 500.0
+offset_right = 1240.0
+offset_bottom = 700.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("DialogueStyle")
+
+[node name="VBox" type="VBoxContainer" parent="Briefing/BriefPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="BriefSpeaker" type="Label" parent="Briefing/BriefPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.5, 1)
+theme_override_font_sizes/font_size = 24
+text = "Johnson Jeng"
+
+[node name="BriefText" type="RichTextLabel" parent="Briefing/BriefPanel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 22
+text = "..."
+
+[node name="BriefHint" type="Label" parent="Briefing/BriefPanel/VBox"]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.55)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Click to continue"
+horizontal_alignment = 2
+
+[node name="DayCard" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+
+[node name="DayBacking" type="ColorRect" parent="DayCard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.05, 0.03, 0.08, 1)
+
+[node name="DayImage" type="TextureRect" parent="DayCard"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(640, 360)
+mouse_filter = 2
+texture = ExtResource("9")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="DayShade" type="ColorRect" parent="DayCard"]
+layout_mode = 0
+offset_top = 470.0
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+color = Color(0.04, 0.02, 0.06, 0.6)
+
+[node name="DayTitle" type="Label" parent="DayCard"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 488.0
+offset_right = 1280.0
+offset_bottom = 588.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.9, 0.1, 0.5, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 76
+text = "DAY 2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DayHeadline" type="Label" parent="DayCard"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 140.0
+offset_top = 592.0
+offset_right = 1140.0
+offset_bottom = 640.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 24
+text = "Headline"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="DayHint" type="Label" parent="DayCard"]
+layout_mode = 0
+offset_left = 1000.0
+offset_top = 680.0
+offset_right = 1260.0
+offset_bottom = 708.0
+modulate = Color(1, 1, 1, 0.55)
+mouse_filter = 2
+theme_override_font_sizes/font_size = 14
+text = "Click to continue"
+horizontal_alignment = 2
+
+[node name="DebugSkip" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 200.0
+offset_bottom = 36.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 0.65, 0.3, 1)
+theme_override_font_sizes/font_size = 13
+text = "Skip minigame (debug)"

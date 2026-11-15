@@ -2,12 +2,20 @@ extends Node
 ## Autoload "GameState": holds the run's hidden truth. The spy is chosen HERE in code, never by the AI.
 
 const CHARACTERS_PATH := "res://data/characters.json"
+const MINIGAME_TASKS_PATH := "res://data/minigame_tasks.json"
+const DATE_SELECT_SCENE := "res://scenes/date_select.tscn"
+const MINIGAME_SCENE := "res://scenes/prompt_minigame.tscn"
+const ENDING_SCENE := "res://scenes/ending.tscn"
+const LAST_DAY := 5
 
 var emotions: Array = []
 var characters: Dictionary = {}
 var spy_id: String = ""
 var day: int = 1
 var dates_left: int = 5
+var dated_today: Array = []         # character ids already dated today
+var minigame_tasks: Dictionary = {} # "day number" -> task dict, from data/minigame_tasks.json
+var minigame_done_today := false
 var clues_seen: Array = []          # [{character, text}]
 var memory: Dictionary = {}         # character_id -> short running summary (unused for now)
 var facts: Dictionary = {}          # character_id -> short facts established in conversation (kept forever)
@@ -28,6 +36,7 @@ var tone_counts: Dictionary = {}    # tone -> times picked
 
 func _ready() -> void:
 	_load_characters()
+	_load_minigame_tasks()
 	new_run()
 
 
@@ -38,12 +47,21 @@ func _load_characters() -> void:
 	characters = data["characters"]
 
 
+func _load_minigame_tasks() -> void:
+	var f := FileAccess.open(MINIGAME_TASKS_PATH, FileAccess.READ)
+	if f:
+		var data = JSON.parse_string(f.get_as_text())
+		if data is Dictionary:
+			minigame_tasks = data.get("days", {})
+
+
 func new_run() -> void:
 	randomize()
 	var ids := characters.keys()
 	spy_id = ids[randi() % ids.size()]
 	day = 1
-	dates_left = 5
+	dated_today.clear()
+	minigame_done_today = false
 	clues_seen.clear()
 	for id in ids:
 		memory[id] = ""
@@ -55,6 +73,59 @@ func new_run() -> void:
 		rude_streak[id] = 0
 	trustmeter = 0
 	tone_counts = {"warm": 0, "neutral": 0, "probing": 0, "rude": 0, "cruel": 0}
+	_recount_dates()
+
+
+# ---- Day loop: each day = date every woman who hasn't left him + one work minigame. ----
+# The minigame runs before or after the dates depending on data/minigame_tasks.json ("timing").
+# Call go_next() whenever a date or minigame ends; it decides where the story goes.
+
+func _recount_dates() -> void:
+	dates_left = 0
+	for id in characters:
+		if not dated_today.has(id) and not dumped.get(id, false):
+			dates_left += 1
+
+
+func finish_date(id: String) -> void:
+	if not dated_today.has(id):
+		dated_today.append(id)
+	_recount_dates()
+
+
+func has_dated_today(id: String) -> bool:
+	return dated_today.has(id)
+
+
+func day_finished() -> bool:
+	_recount_dates()   # someone may have just dumped him
+	return dates_left <= 0
+
+
+func end_day() -> void:
+	day += 1
+	dated_today.clear()
+	minigame_done_today = false
+	_recount_dates()
+
+
+## Today's minigame task, or {} if this day has none.
+func minigame_task(for_day: int = day) -> Dictionary:
+	return minigame_tasks.get(str(for_day), {})
+
+
+func go_next() -> void:
+	var timing: String = minigame_task().get("timing", "")
+	if not minigame_done_today and (timing == "before_dates" or (timing == "after_dates" and day_finished())):
+		get_tree().change_scene_to_file(MINIGAME_SCENE)
+	elif day_finished():
+		if day >= LAST_DAY:
+			get_tree().change_scene_to_file(ENDING_SCENE)
+		else:
+			end_day()
+			go_next()
+	else:
+		get_tree().change_scene_to_file(DATE_SELECT_SCENE)
 
 
 func is_spy(id: String) -> bool:

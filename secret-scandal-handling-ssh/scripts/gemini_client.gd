@@ -193,6 +193,29 @@ func request_line(id: String, beat: String, player_said: String = "", tone: Stri
 	line_ready.emit(line)
 
 
+## Generic call for other features (e.g. the prompt minigame): `var res: Dictionary = await GeminiClient.generate(...)`.
+## `contents` is the Gemini chat history: [{"role": "user"/"model", "parts": [{"text": ...}]}, ...]
+## Uses the same model race as request_line. Returns {"ok": true, "text": String} or {"ok": false, "error": String}.
+func generate(system: String, contents: Array, config: Dictionary = {}) -> Dictionary:
+	if _api_key == "":
+		return {"ok": false, "error": "no api key"}
+	var body := {"system_instruction": {"parts": [{"text": system}]}, "contents": contents, "generationConfig": config}
+	var headers := ["Content-Type: application/json", "x-goog-api-key: " + _api_key]
+	var winner: PackedByteArray = await _race(JSON.stringify(body), headers)
+	if winner.is_empty():
+		return {"ok": false, "error": "all models failed or timed out"}
+	var parsed = JSON.parse_string(winner.get_string_from_utf8())
+	if not (parsed is Dictionary and parsed.has("candidates") and not parsed["candidates"].is_empty()):
+		return {"ok": false, "error": "bad response"}
+	var text := ""
+	for part in parsed["candidates"][0].get("content", {}).get("parts", []):
+		if part.has("text") and not part.get("thought", false):
+			text += part["text"]
+	if text == "":
+		return {"ok": false, "error": "empty response"}
+	return {"ok": true, "text": text}
+
+
 ## Makes sure every choice is {text, tone} with a known tone.
 func _normalize_choices(raw) -> Array:
 	var out: Array = []
