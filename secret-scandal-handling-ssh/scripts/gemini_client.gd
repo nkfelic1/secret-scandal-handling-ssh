@@ -1,11 +1,11 @@
 extends Node
 ## Autoload "GeminiClient": generates one date-scene beat as structured JSON.
-## The key lives in res://secrets.cfg (git-ignored). Do not hardcode it.
+## Gemini requests go through the Cloudflare Worker. The API key lives only in Cloudflare.
 
 signal line_ready(line: Dictionary)      # {speaker, emotion, text, choices}
 signal failed(reason: String)
 
-const ENDPOINT := "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent"
+const BACKEND_URL := "https://ssh-api.hliu325.workers.dev/"
 
 const WORLD := """WORLD AND RULES OF THE GAME (always true):
 - The player IS Johnson Jeng, CEO of Invision, a powerful AI-chip company. Invision's main rival is DMA. He is secretly dating several women at once.
@@ -34,7 +34,6 @@ const REQUEST_TIMEOUT := 10.0  # give up on any single date-line request after t
 const LONG_TIMEOUT := 30.0     # generate() default: emails, posts, code and grading are longer replies
 const DEFAULT_COOLDOWN := 60.0 # skip a rate-limited model this long if Google gives no retryDelay
 
-var _api_key := ""
 var _model := "gemini-3.5-flash-lite"
 var _blocked_until := {}       # model -> Time.get_ticks_msec() when it may be tried again
 
@@ -42,16 +41,12 @@ var _blocked_until := {}       # model -> Time.get_ticks_msec() when it may be t
 func _ready() -> void:
 	var cfg := ConfigFile.new()
 	if cfg.load("res://secrets.cfg") == OK:
-		_api_key = cfg.get_value("gemini", "api_key", "")
 		_model = cfg.get_value("gemini", "model", _model)
-	else:
-		push_warning("secrets.cfg missing - Gemini calls will use fallback lines.")
 
 
-## Hints get stronger as days pass and as you spend more turns with this character.
 func _hint_level(id: String) -> int:
 	var turns: int = GameState.history[id].size() / 2
-	return clampi(GameState.day + turns / 4 + GameState.bothered_bonus(id), 1, 4)   # bothered (low trust) = more slips
+	return clampi(GameState.day + turns / 4 + GameState.bothered_bonus(id), 1, 4)
 
 
 func _system_prompt(id: String, beat: String, tone: String = "") -> String:
@@ -88,13 +83,11 @@ Keep it flirty, PG-13, and SHORT: 1-2 sentences, under 25 words total, like a qu
 		c["good_mood"], bothered, GameState.active_secret(id), role_note, extra, HINT_LEVELS[_hint_level(id)],
 		GameState.trust[id], GameState.trust_label(id), GameState.trust_guidance(id),
 		"; ".join(GameState.facts[id]) if GameState.facts[id].size() > 0 else "none yet", beat]
-	# The meaner Johnson is, the more bothered she gets, and a bothered person lets her guard slip.
 	if tone == "rude" or tone == "cruel":
 		prompt += "\nJOHNSON WAS JUST %s TO YOU. You are bothered and your guard is down. React in your bothered manner, and let ONE telling slip about your hidden secret show in this reply without confessing it outright." % ("CRUEL" if tone == "cruel" else "RUDE")
 	return prompt
 
 
-## Last few chat turns (must start with a "user" turn and alternate) plus the new Johnson turn.
 func _contents(id: String, user_text: String) -> Array:
 	var h: Array = GameState.history[id].slice(-16)
 	while h.size() > 0 and h[0]["role"] != "user":
@@ -134,17 +127,34 @@ func _launch(model: String, body_text: String, headers: Array, state: Dictionary
 	var http := HTTPRequest.new()
 	http.timeout = timeout
 	add_child(http)
-	if http.request(ENDPOINT % model, headers, HTTPClient.METHOD_POST, body_text) == OK:
+
+	var gemini_body = JSON.parse_string(body_text)
+	if not gemini_body is Dictionary:
+		print("ERROR: Could not parse outgoing Gemini body.")
+		http.queue_free()
+		state["pending"] -= 1
+		return
+
+	var cloudflare_body := {"model": model, "body": gemini_body}
+	var request_error := http.request(BACKEND_URL, headers, HTTPClient.METHOD_POST, JSON.stringify(cloudflare_body))
+
+	if request_error != OK:
+		print("CLOUDFLARE REQUEST COULD NOT START. Error: ", request_error)
+	else:
 		var r = await http.request_completed
-		if r[1] == 200 and not state["won"]:
+		var response_code: int = r[1]
+		if response_code != 200:
+			print("Gemini via Cloudflare: %s -> HTTP %d" % [model, response_code])
+
+		if response_code == 200 and not state["won"]:
 			state["won"] = true
 			state["winner"] = r[3]
-		elif r[1] == 429 or r[1] == 404:   # out of quota / model gone: stop asking it for a while
+		elif response_code == 429 or response_code == 404:   # out of quota / model gone: stop asking it for a while
 			var wait := DEFAULT_COOLDOWN
 			var m := RegEx.create_from_string("\"retryDelay\":\\s*\"(\\d+)").search(r[3].get_string_from_utf8())
 			if m:
 				wait = float(m.get_string(1))
-			elif r[1] == 404:
+			elif response_code == 404:
 				wait = 3600.0
 			_blocked_until[model] = Time.get_ticks_msec() + int(wait * 1000.0)
 	http.queue_free()
@@ -152,20 +162,17 @@ func _launch(model: String, body_text: String, headers: Array, state: Dictionary
 
 
 func request_line(id: String, beat: String, player_said: String = "", tone: String = "") -> void:
-	if _api_key == "":
-		failed.emit("no api key")
-		line_ready.emit(_fallback(id))
-		return
 	var user_text := ""
 	if player_said == "":
 		user_text = "(You and Johnson have just sat down for your date. Say your opening line to him.)"
 	else:
 		user_text = 'Johnson says%s: "%s"' % [(" (tone: %s)" % tone) if tone != "" else "", player_said]
+
 	var body := {
 		"system_instruction": {"parts": [{"text": _system_prompt(id, beat, tone)}]},
 		"contents": _contents(id, user_text),
 		"generationConfig": {
-			"thinkingConfig": {"thinkingLevel": "minimal"},   # faster: no long internal reasoning
+			"thinkingConfig": {"thinkingLevel": "minimal"},
 			"maxOutputTokens": 250,
 			"responseMimeType": "application/json",
 			"responseSchema": {
@@ -182,7 +189,7 @@ func request_line(id: String, beat: String, player_said: String = "", tone: Stri
 			}
 		}
 	}
-	var headers := ["Content-Type: application/json", "x-goog-api-key: " + _api_key]
+	var headers := ["Content-Type: application/json"]
 	var line = null
 	for attempt in 2:   # a cut-off or malformed reply gets one retry before the fallback line
 		var winner: PackedByteArray = await _race(JSON.stringify(body), headers)
@@ -192,20 +199,26 @@ func request_line(id: String, beat: String, player_said: String = "", tone: Stri
 		if line is Dictionary and line.has("text"):
 			break
 	if not (line is Dictionary and line.has("text")):
-		failed.emit("bad response")
+		failed.emit("all models failed or bad response")
 		line_ready.emit(_fallback(id))
 		return
+
 	line["choices"] = _normalize_choices(line.get("choices", []))
+
 	if not line.get("emotion", "") in GameState.emotions:
 		line["emotion"] = "neutral"
+
 	line["speaker"] = GameState.characters[id]["name"]
+
 	GameState.history[id].append({"role": "user", "text": user_text})
 	GameState.history[id].append({"role": "model", "text": str(line["text"])})
+
 	var fact := str(line.get("fact", "")).strip_edges()
 	if fact != "" and not GameState.facts[id].has(fact):
 		GameState.facts[id].append(fact)
 		if GameState.facts[id].size() > 12:
 			GameState.facts[id].pop_front()
+
 	line_ready.emit(line)
 
 
@@ -213,10 +226,8 @@ func request_line(id: String, beat: String, player_said: String = "", tone: Stri
 ## `contents` is the Gemini chat history: [{"role": "user"/"model", "parts": [{"text": ...}]}, ...]
 ## Uses the same model race as request_line. Returns {"ok": true, "text": String} or {"ok": false, "error": String}.
 func generate(system: String, contents: Array, config: Dictionary = {}, timeout: float = LONG_TIMEOUT) -> Dictionary:
-	if _api_key == "":
-		return {"ok": false, "error": "no api key"}
 	var body := {"system_instruction": {"parts": [{"text": system}]}, "contents": contents, "generationConfig": config}
-	var headers := ["Content-Type: application/json", "x-goog-api-key: " + _api_key]
+	var headers := ["Content-Type: application/json"]
 	var winner: PackedByteArray = await _race(JSON.stringify(body), headers, timeout)
 	if winner.is_empty():
 		return {"ok": false, "error": "all models failed or timed out"}

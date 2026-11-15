@@ -9,16 +9,25 @@ const OUTCOME_TITLES := {
 	"alone": "ALONE",
 }
 
+## The leak investigation outcome takes priority over the trustmeter title.
+const CASE_TITLES := {
+	"solved": "LEAK STOPPED",
+	"failed": "FIRED",
+}
+
 
 func _ready() -> void:
 	var r: Dictionary = GameState.ending_report()
-	%Title.text = OUTCOME_TITLES.get(r["outcome"], "The end")
+	%Title.text = CASE_TITLES.get(r["case_state"], OUTCOME_TITLES.get(r["outcome"], "The end"))
 	%Rating.text = "Trustmeter: %+d  -  %s" % [r["trustmeter"], r["rating"]]
 	var text := ""
+	if r["case_summary"] != "":
+		var color := "#8fe3a0" if r["case_state"] == "solved" else "#ff7a7a"
+		text += "[center][color=%s]%s[/color][/center]\n\n" % [color, r["case_summary"]]
 	if r["punishment"] != "":
-		text = "[center]%s[/center]" % r["punishment"]
+		text += "[center]%s[/center]" % r["punishment"]
 	else:
-		text = "[center]You were kind to the people who trusted you, and it shows.[/center]"
+		text += "[center]You were kind to the people who trusted you, and it shows.[/center]"
 	text += "\n\n[center][color=#9a8aa8]Replies picked: %d warm, %d neutral, %d probing, %d rude, %d cruel[/color][/center]" % [
 		r["tone_counts"]["warm"], r["tone_counts"]["neutral"], r["tone_counts"]["probing"], r["tone_counts"]["rude"], r["tone_counts"]["cruel"]]
 	%Punishment.text = text
@@ -38,7 +47,12 @@ func _ready() -> void:
 		bar.modulate = Color.from_hsv(clampf(GameState.trust[id] / 100.0, 0.0, 1.0) * 0.33, 0.65, 1.0)
 		row.add_child(bar)
 		var state := Label.new()
-		state.text = "Left you" if GameState.dumped[id] else GameState.trust_label(id)
+		if GameState.is_accused(id):
+			state.text = "Wrongly accused"
+		elif GameState.dumped[id]:
+			state.text = "Left you"
+		else:
+			state.text = GameState.trust_label(id)
 		row.add_child(state)
 		%TrustList.add_child(row)
 	%NewRunButton.pressed.connect(func():

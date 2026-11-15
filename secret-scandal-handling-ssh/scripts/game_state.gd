@@ -6,7 +6,9 @@ const MINIGAME_TASKS_PATH := "res://data/minigame_tasks.json"
 const DATE_SELECT_SCENE := "res://scenes/date_select.tscn"
 const MINIGAME_SCENE := "res://scenes/prompt_minigame.tscn"
 const ENDING_SCENE := "res://scenes/ending.tscn"
+const ACCUSE_SCENE := "res://scenes/accuse_select.tscn"
 const LAST_DAY := 5
+const FIRST_ACCUSATION_DAY := 2     # no accusation on day 1; from day 2 on, every day ends with one
 
 var emotions: Array = []
 var characters: Dictionary = {}
@@ -32,6 +34,21 @@ var dumped: Dictionary = {}         # character_id -> true once trust hits 0 (sh
 var rude_streak: Dictionary = {}    # character_id -> how many rude/cruel replies in a row to her
 var trustmeter: int = 0             # overall signed score: kind replies add, mean replies subtract. Revealed at the end.
 var tone_counts: Dictionary = {}    # tone -> times picked
+
+# ---- Accusations. From day 2 on, every day ends with Johnson accusing one woman of being the leaker. ----
+## What goes public when Johnson wrongly accuses each woman. She is still innocent of the leaks.
+const ACCUSATION_SCANDALS := {
+	"nvision_swe": "NVision CEO's secret romance with one of his own engineers raises workplace-ethics questions.",
+	"amd_employee": "NVision CEO secretly involved with a woman tied to rival DMA, sparking corporate-security concerns.",
+	"childhood_sweetheart": "NVision CEO's years-long secret relationship with his childhood friend comes to light.",
+	"startup_ceo": "NVision CEO's hidden relationship with a rival startup founder raises conflict-of-interest concerns.",
+	"shareholder": "NVision CEO secretly dating a member of his own Board, prompting a governance and board-independence crisis.",
+}
+var accused: Dictionary = {}        # character_id -> day she was WRONGLY accused. She has broken up with him for good.
+var wrong_accusations: Array = []   # [{id, day}] in the order they happened (for news/ending screens)
+var accused_today := false          # has today's accusation already been made?
+var case_state := "open"            # open | solved (caught the leaker) | failed (final day ended without catching her)
+var solved_day := 0                 # the day the leaker was caught (earlier = better ending), 0 if never
 
 
 func _ready() -> void:
@@ -71,6 +88,11 @@ func new_run() -> void:
 		trust[id] = START_TRUST
 		dumped[id] = false
 		rude_streak[id] = 0
+	accused.clear()
+	wrong_accusations.clear()
+	accused_today = false
+	case_state = "open"
+	solved_day = 0
 	trustmeter = 0
 	tone_counts = {"warm": 0, "neutral": 0, "probing": 0, "rude": 0, "cruel": 0}
 	_recount_dates()
@@ -83,7 +105,7 @@ func new_run() -> void:
 func _recount_dates() -> void:
 	dates_left = 0
 	for id in characters:
-		if not dated_today.has(id) and not dumped.get(id, false):
+		if not dated_today.has(id) and can_date(id):
 			dates_left += 1
 
 
@@ -97,6 +119,16 @@ func has_dated_today(id: String) -> bool:
 	return dated_today.has(id)
 
 
+## She can still go on dates: she hasn't dumped him and he hasn't wrongly accused her.
+func can_date(id: String) -> bool:
+	return not dumped.get(id, false) and not is_accused(id)
+
+
+## True once Johnson has wrongly accused her of being the leaker. She won't go on dates with him again.
+func is_accused(id: String) -> bool:
+	return accused.has(id)
+
+
 func day_finished() -> bool:
 	_recount_dates()   # someone may have just dumped him
 	return dates_left <= 0
@@ -106,6 +138,7 @@ func end_day() -> void:
 	day += 1
 	dated_today.clear()
 	minigame_done_today = false
+	accused_today = false
 	_recount_dates()
 
 
@@ -119,7 +152,9 @@ func go_next() -> void:
 	if not minigame_done_today and (timing == "before_dates" or (timing == "after_dates" and day_finished())):
 		get_tree().change_scene_to_file(MINIGAME_SCENE)
 	elif day_finished():
-		if day >= LAST_DAY:
+		if accusation_due():
+			get_tree().change_scene_to_file(ACCUSE_SCENE)
+		elif case_state != "open" or day >= LAST_DAY:
 			get_tree().change_scene_to_file(ENDING_SCENE)
 		else:
 			end_day()
@@ -137,9 +172,35 @@ func active_secret(id: String) -> String:
 	return c["malicious_secret"] if is_spy(id) else c["innocent_secret"]
 
 
-## Returns the "guess who the leaker is" result.
+## The day's dates (and work) are done and Johnson still has to name today's suspect.
+func accusation_due() -> bool:
+	return case_state == "open" and day >= FIRST_ACCUSATION_DAY and not accused_today
+
+
+## Women Johnson can still accuse. Anyone he has already wrongly accused is ruled out.
+## (A woman who dumped him can still be accused: she might be the leaker.)
+func can_accuse(id: String) -> bool:
+	return characters.has(id) and not is_accused(id)
+
+
+## Johnson accuses her of being the leaker. Returns true if he caught the real leaker.
+## A wrong accusation ends that relationship for good and makes it public.
 func accuse(id: String) -> bool:
-	return is_spy(id)
+	accused_today = true
+	if is_spy(id):
+		case_state = "solved"
+		solved_day = day
+		return true
+	accused[id] = day
+	wrong_accusations.append({"id": id, "day": day})
+	if day >= LAST_DAY:
+		case_state = "failed"
+	_recount_dates()
+	return false
+
+
+func accusation_scandal(id: String) -> String:
+	return ACCUSATION_SCANDALS.get(id, "NVision CEO's secret relationship goes public.")
 
 
 func portrait_path(id: String, emotion: String) -> String:
@@ -242,4 +303,27 @@ func ending_report() -> Dictionary:
 		outcome = "reputation"
 		punishment = "Whispers start in the Invision hallways. Nobody says it to your face, but people stop returning your calls as quickly. Trust is slower to win back than it was to lose."
 	return {"trustmeter": trustmeter, "rating": rating, "outcome": outcome, "punishment": punishment,
-		"dumped": gone, "tone_counts": tone_counts.duplicate()}
+		"dumped": gone, "tone_counts": tone_counts.duplicate(),
+		"case_state": case_state, "solved_day": solved_day, "case_summary": case_summary(),
+		"wrong_accusations": wrong_accusations.duplicate(true)}
+
+
+## One paragraph on how the leak investigation ended, for the ending screen.
+func case_summary() -> String:
+	var spy_name: String = characters[spy_id]["name"]
+	var text := ""
+	if case_state == "solved":
+		if solved_day <= FIRST_ACCUSATION_DAY:
+			text = "You named %s as the leaker on day %d. NVision contained the leak almost immediately, investors cheered the rapid response, and the stock is soaring." % [spy_name, solved_day]
+		else:
+			text = "You named %s as the leaker on day %d. The leak is stopped and NVision's secrets are safe, though the delay cost the company some confidence." % [spy_name, solved_day]
+	elif case_state == "failed":
+		text = "You never caught the leaker. %s released NVision's confidential files, the company's secrets are public, and the Board has fired you." % spy_name
+	else:
+		return ""
+	if not wrong_accusations.is_empty():
+		var names: Array = []
+		for w in wrong_accusations:
+			names.append(characters[w["id"]]["name"])
+		text += " Along the way you wrongly accused %s, and those relationships are now front-page news." % ", ".join(PackedStringArray(names))
+	return text
