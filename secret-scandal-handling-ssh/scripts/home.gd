@@ -18,7 +18,7 @@ func _ready() -> void:
 	btn.size = Vector2(320, 100)
 	btn.pressed.connect(func():
 		GameState.new_run()
-		get_tree().change_scene_to_file("res://scenes/date_select.tscn"))
+		get_tree().change_scene_to_file("res://scenes/intro.tscn"))
 	add_child(btn)
 
 	var label := Label.new()
